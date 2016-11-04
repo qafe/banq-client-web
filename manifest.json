@@ -1,0 +1,7 @@
+{
+  "name": "banq-client-web",
+  "short_name": "banq-client-web",
+  "description": "Banking web application for BanQ",
+  "start_url": "/",
+  "display": "standalone"
+}
