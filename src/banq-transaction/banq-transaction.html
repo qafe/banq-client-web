@@ -33,14 +33,15 @@
                 method="GET"
                 url="[[url]]"
                 handle-as="json"
+                last-error="{{error}}"
                 last-response="{{account}}">
     </iron-ajax>
 
     <div id="nameAndNumber">
       <div>[[account.name]]</div>
-      <div id="number">[[account.number]]</div>
+      <div id="number">[[account.id]]</div>
     </div>
-    <div id="amount">[[amount]]</div>
+    <div id="amount"><span hidden$="[[_isDebit(accountNumber, transaction)]]">-</span>[[_formatCurrency(transaction.amount)]]</div>
 
   </template>
   <script>
@@ -56,26 +57,44 @@
         properties: {
           wide: Boolean,
           token: String,
-          amount: Number,
-          toAccount: Number
+          accountNumber: String,
+          transaction: Object
         },
 
         observers: [
-          '_handleToken(token)'
+          '_triggerRequest(token, accountNumber, transaction)',
+          '_handleError(error)'
         ],
 
         generateRequest: function() {
+          let account = this._isDebit(this.accountNumber, this.transaction) ? this.transaction.toAccount : this.transaction.fromAccount;
+
           var headers = {};
           headers.Authorization = 'Bearer ' + this.token;
 
           this.$.ajaxAccount.headers = headers;
-          this.$.ajaxAccount.url = 'localhost:3000/accounts/' + this.toAccount;
+          this.$.ajaxAccount.url = 'http://localhost:3000/accounts/' + account;
           this.$.ajaxAccount.generateRequest();
         },
 
-        _handleToken: function(token) {
-          if (token) {
+        _triggerRequest: function(token, accountNumber, transaction) {
+          if (token && accountNumber && transaction) {
             this.generateRequest();
+          }
+        },
+
+        _formatCurrency: function(amount) {
+          var l10n = new Intl.NumberFormat("nl-NL", {"minimumFractionDigits": 2, "maximumFractionDigits": 2})
+          return l10n.format(amount);
+        },
+
+        _isDebit: function(accountNumber, transaction) {
+          return this.transaction.fromAccount == this.accountNumber;
+        },
+
+        _handleError: function(error) {
+          if (error && error.status == '403') {
+            this.token = null;
           }
         }
       });

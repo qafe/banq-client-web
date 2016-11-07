@@ -23,8 +23,8 @@
 
     <iron-ajax  id="ajaxTransactions"
                 method="GET"
-                url="[[url]]"
                 handle-as="json"
+                last-error="{{error}}"
                 last-response="{{transactions}}">
     </iron-ajax>
 
@@ -32,8 +32,8 @@
       <template is="dom-repeat" items="[[transactions]]" as="transaction">
         <banq-transaction wide$="[[wide]]"
                           token="{{token}}"
-                          amount="[[transaction.amount]]"
-                          to-account="[[transaction.toAccount]]">
+                          account-number="[[accountNumber]]"
+                          transaction="[[transaction]]">
         </banq-transaction>
       </template>
     </paper-listbox>
@@ -51,11 +51,13 @@
             type: String,
             notify: true,
             value: null
-          }
+          },
+          accountNumber: String
         },
 
         observers: [
-          '_handleToken(token)'
+          '_triggerRequest(token, accountNumber)',
+          '_handleError(error)'
         ],
 
         generateRequest: function() {
@@ -63,12 +65,19 @@
           headers.Authorization = 'Bearer ' + this.token;
 
           this.$.ajaxTransactions.headers = headers;
+          this.$.ajaxTransactions.url = this.url + '?q=' + this.accountNumber;
           this.$.ajaxTransactions.generateRequest();
         },
 
-        _handleToken: function(token) {
-          if (token) {
+        _triggerRequest: function(token, accountNumber) {
+          if (token && accountNumber) {
             this.generateRequest();
+          }
+        },
+
+        _handleError: function(error) {
+          if (error && error.status == '403') {
+            this.token = null;
           }
         }
       });

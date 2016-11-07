@@ -33,7 +33,7 @@
       <div>[[name]]</div>
       <div id="number">[[number]]</div>
     </div>
-    <div id="balance">[[balance]]</div>
+    <div id="balance">[[_formatCurrency(balance)]]</div>
 
   </template>
   <script>
@@ -51,7 +51,12 @@
 
         behaviors: [
           Polymer.PaperItemBehavior
-        ]
+        ],
+
+        _formatCurrency: function(amount) {
+          var l10n = new Intl.NumberFormat("nl-NL", {"minimumFractionDigits": 2, "maximumFractionDigits": 2})
+          return l10n.format(amount);
+        }
       });
     })();
   </script>

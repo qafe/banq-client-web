@@ -80,7 +80,6 @@
                                     url="http://localhost:3000/login"
                                     token="{{token}}">
             </banq-login-credentials>
-            <div data-page="home">Home</div>
             <banq-accounts  data-page="accounts"
                             wide$="[[wide]]"
                             route="{{pageTail}}"
@@ -114,7 +113,7 @@
       ],
 
       _handleToken: function(token) {
-        this.$.pages.selected = (token == null ? '' : 'home');
+        this.$.pages.selected = (token == null ? '' : 'accounts');
       },
 
       _handleSignOut: function(token) {

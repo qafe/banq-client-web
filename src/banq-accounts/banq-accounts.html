@@ -12,17 +12,42 @@
   <template>
     <style include="banq-styles">
       :host {
-        @apply --layout-vertical;
-        @apply --layout-flex;
+        @apply --layout-horizontal;
+        @apply --layout-wrap;
+        padding-top: 1%;
+      }
+
+      iron-pages {
+        width: 100%;
       }
 
       paper-listbox {
         --paper-listbox-background-color: transparent;
+        padding-top: 0;
+      }
+
+      #headerAccount, #headerBalance {
+        padding: 1%;
+        font-weight: bold;
+      }
+
+      #headerAccount {
+        @apply --layout-flex;
+        color: var(--primary-color);
+      }
+
+      #headerBalance {
+        color: var(--secondary-text-color);
+      }
+
+      #transactionsAccount {
+        border-bottom-style: solid;
+        border-bottom-width: thin;
       }
     </style>
 
     <app-route  route="{{route}}"
-                pattern="/:account"
+                pattern="/:accountNumber"
                 data="{{accountData}}"
                 tail="{{accountTail}}">
     </app-route>
@@ -31,29 +56,39 @@
                 method="GET"
                 url="[[url]]"
                 handle-as="json"
+                last-error="{{error}}"
                 last-response="{{accounts}}">
     </iron-ajax>
 
+    <div id="headerAccount">Accounts</div><div id="headerBalance">Euro(€)</div>
     <iron-pages id="pages"
-                selected="[[accountData.account]]"
+                selected="[[accountData.accountNumber]]"
                 attr-for-selected="data-page">
       <div data-page="accounts">
-        <paper-listbox attr-for-selected="number" selected="{{accountData.account}}">
+        <paper-listbox attr-for-selected="number" selected-item="{{selectedAccount}}" selected="{{accountData.accountNumber}}">
           <template is="dom-repeat" items="[[accounts]]" as="account">
             <banq-account wide$="[[wide]]"
                           name="[[account.name]]"
-                          number="[[account.number]]"
+                          number="[[account.id]]"
                           balance="[[account.balance]]">
             </banq-account>
           </template>
         </paper-listbox>
       </div>
-      <banq-transactions  data-page="[[accountData.account]]"
-                          wide$="[[wide]]"
-                          route="{{accountTail}}"
-                          url="http://localhost:3000/transactions"
-                          token="{{token}}">
-      <banq-transactions>
+      <div data-page="[[accountData.accountNumber]]">
+        <banq-account id="transactionsAccount"
+                      wide$="[[wide]]"
+                      name="[[selectedAccount.name]]"
+                      number="[[selectedAccount.number]]"
+                      balance="[[selectedAccount.balance]]">
+        </banq-account>
+        <banq-transactions  wide$="[[wide]]"
+                            route="{{accountTail}}"
+                            url="http://localhost:3000/transactions"
+                            token="{{token}}"
+                            account-number="[[selectedAccount.number]]">
+        <banq-transactions>
+      </div>
     </iron-pages>
 
   </template>
@@ -80,8 +115,9 @@
 
         observers: [
           '_handleToken(token)',
-          '_handleSelectedAccount(accountData.account)',
-          '_handleRoute(route)'
+          '_handleSelectedAccountNumber(accountData.accountNumber)',
+          '_handleRoute(route)',
+          '_handleError(error)'
         ],
 
         generateRequest: function() {
@@ -98,16 +134,22 @@
           }
         },
 
-        _handleSelectedAccount: function(account) {
+        _handleSelectedAccountNumber: function(accountNumber) {
           if (this.route && this.route.prefix == this.prefixPattern) {
-            this.set('route.path', account);
+            this.set('route.path', accountNumber);
           }
         },
 
         _handleRoute: function(route) {
           if (route.path == '') {
-            this.set('accountData.account', undefined);
+            this.set('accountData.accountNumber', undefined);
             this.$.pages.selected = 'accounts';
+          }
+        },
+
+        _handleError: function(error) {
+          if (error && error.status == '403') {
+            this.token = null;
           }
         }
       });
