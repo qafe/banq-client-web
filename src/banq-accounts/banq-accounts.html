@@ -1,0 +1,116 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/app-route/app-route.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../banq-account/banq-account.html">
+<link rel="import" href="../banq-transactions/banq-transactions.html">
+<link rel="import" href="../banq-styles/banq-styles.html">
+
+<dom-module id="banq-accounts">
+  <template>
+    <style include="banq-styles">
+      :host {
+        @apply --layout-vertical;
+        @apply --layout-flex;
+      }
+
+      paper-listbox {
+        --paper-listbox-background-color: transparent;
+      }
+    </style>
+
+    <app-route  route="{{route}}"
+                pattern="/:account"
+                data="{{accountData}}"
+                tail="{{accountTail}}">
+    </app-route>
+
+    <iron-ajax  id="ajaxAccounts"
+                method="GET"
+                url="[[url]]"
+                handle-as="json"
+                last-response="{{accounts}}">
+    </iron-ajax>
+
+    <iron-pages id="pages"
+                selected="[[accountData.account]]"
+                attr-for-selected="data-page">
+      <div data-page="accounts">
+        <paper-listbox attr-for-selected="number" selected="{{accountData.account}}">
+          <template is="dom-repeat" items="[[accounts]]" as="account">
+            <banq-account wide$="[[wide]]"
+                          name="[[account.name]]"
+                          number="[[account.number]]"
+                          balance="[[account.balance]]">
+            </banq-account>
+          </template>
+        </paper-listbox>
+      </div>
+      <banq-transactions  data-page="[[accountData.account]]"
+                          wide$="[[wide]]"
+                          route="{{accountTail}}"
+                          url="http://localhost:3000/transactions"
+                          token="{{token}}">
+      <banq-transactions>
+    </iron-pages>
+
+  </template>
+  <script>
+    (function() {
+      'use strict';
+      Polymer({
+        is: 'banq-accounts',
+
+        properties: {
+          wide: Boolean,
+          route: {
+            type: Object,
+            notify: true
+          },
+          prefixPattern: String,
+          url: String,
+          token: {
+            type: String,
+            notify: true,
+            value: null
+          }
+        },
+
+        observers: [
+          '_handleToken(token)',
+          '_handleSelectedAccount(accountData.account)',
+          '_handleRoute(route)'
+        ],
+
+        generateRequest: function() {
+          var headers = {};
+          headers.Authorization = 'Bearer ' + this.token;
+
+          this.$.ajaxAccounts.headers = headers;
+          this.$.ajaxAccounts.generateRequest();
+        },
+
+        _handleToken: function(token) {
+          if (token) {
+            this.generateRequest();
+          }
+        },
+
+        _handleSelectedAccount: function(account) {
+          if (this.route && this.route.prefix == this.prefixPattern) {
+            this.set('route.path', account);
+          }
+        },
+
+        _handleRoute: function(route) {
+          if (route.path == '') {
+            this.set('accountData.account', undefined);
+            this.$.pages.selected = 'accounts';
+          }
+        }
+      });
+    })();
+  </script>
+</dom-module>

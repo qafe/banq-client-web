@@ -6,12 +6,14 @@
 <link rel="import" href="../../bower_components/app-layout/app-toolbar/app-toolbar.html">
 <link rel="import" href="../../bower_components/app-route/app-location.html">
 <link rel="import" href="../../bower_components/app-route/app-route.html">
+<link rel="import" href="../../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../../bower_components/iron-media-query/iron-media-query.html">
 <link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../banq-login-credentials/banq-login-credentials.html">
+<link rel="import" href="../banq-accounts/banq-accounts.html">
 <link rel="import" href="../banq-styles/banq-styles.html">
 
 <dom-module id="banq-client-web-app">
@@ -38,9 +40,15 @@
       #q {
         color: var(--secondary-text-color);
       }
+
+      app-toolbar > paper-button {
+        font-size: 15px;
+      }
     </style>
 
     <iron-media-query query="(min-width: 720px)" query-matches="{{wide}}"></iron-media-query>
+
+    <app-localstorage-document key="token" data="{{token}}"></app-localstorage-document>
 
     <app-location route="{{route}}"></app-location>
 
@@ -73,8 +81,14 @@
                                     token="{{token}}">
             </banq-login-credentials>
             <div data-page="home">Home</div>
-            <div data-page="accounts">Accounts</div>
-            <div data-page="transactions">Transactions</div>
+            <banq-accounts  data-page="accounts"
+                            wide$="[[wide]]"
+                            route="{{pageTail}}"
+                            prefix-pattern="/accounts"
+                            url="http://localhost:3000/accounts"
+                            token="{{token}}">
+            </banq-accounts>
+            <div  data-page="transactions">Transactions</div>
             <div data-page="addresses">Addresses</div>
           </iron-pages>
         </div>
@@ -95,7 +109,8 @@
       },
 
       observers: [
-        '_handleToken(token)'
+        '_handleToken(token)',
+        '_verifyPageAccess(token, pageData.page)'
       ],
 
       _handleToken: function(token) {
@@ -104,6 +119,12 @@
 
       _handleSignOut: function(token) {
         this.token = null;
+      },
+
+      _verifyPageAccess: function(token, page) {
+        if (!token && page != 'login') {
+          this.set('pageData.page', 'login');
+        }
       }
     });
   </script>

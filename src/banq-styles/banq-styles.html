@@ -59,52 +59,52 @@
         /* paper-menu */
         --paper-menu-background-color: #fff;
         --menu-link-color: #111111;
+
+        /* General styles */
+        --display1: {
+          @apply --paper-font-display1;
+        };
+
+        --headline: {
+          @apply --paper-font-headline;
+        };
+
+        --title: {
+          @apply --paper-font-title;
+          color: var(--primary-color);
+        };
+
+        --subheading: {
+          @apply --paper-font-subhead;
+        };
+
+        --body2: {
+          @apply --paper-font-body2;
+        };
+
+        --body1: {
+          @apply --paper-font-body1;
+        };
+
+        --caption: {
+          @apply --paper-font-caption;
+        };
+
+        --button: {
+          @apply --paper-font-button;
+        };
       }
 
-      /* General styles */
-      --display1: {
-        @apply(--paper-font-display1);
-      };
-
-      --headline: {
-        @apply(--paper-font-headline);
-      };
-
-      --title: {
-        @apply(--paper-font-title);
-        color: var(--primary-color);
-      };
-
-      --subheading: {
-        @apply(--paper-font-subhead);
-      };
-
-      --body2: {
-        @apply(--paper-font-body2);
-      };
-
-      --body1: {
-        @apply(--paper-font-body1);
-      };
-
-      --caption: {
-        @apply(--paper-font-caption);
-      };
-
-      --button: {
-        @apply(--paper-font-button);
-      };
-
       body {
-        @apply(--layout-fullbleed);
-        @apply(--layout-vertical);
+        @apply --layout-fullbleed;
+        @apply --layout-vertical;
         background: #fafafa;
         font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif;
         color: #333;
       }
 
       .space {
-        @apply(--layout-flex);
+        @apply --layout-flex;
       }
 
       paper-button {

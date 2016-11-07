@@ -1,0 +1,84 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item-behavior.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item-shared-styles.html">
+<link rel="import" href="../banq-styles/banq-styles.html">
+
+<dom-module id="banq-transaction">
+  <template>
+    <style include="paper-item-shared-styles"></style>
+    <style include="banq-styles">
+      :host {
+        @apply --layout-horizontal;
+        @apply --subheading;
+        padding: 1%;
+      }
+
+      #nameAndNumber {
+        @apply --layout-vertical;
+        @apply --layout-flex;
+      }
+
+      #number {
+        color: var(--primary-color);
+        @apply --body1;
+      }
+
+      #amount {
+        @apply --layout-self-center;
+        font-weight: bold;
+      }
+    </style>
+
+    <iron-ajax  id="ajaxAccount"
+                method="GET"
+                url="[[url]]"
+                handle-as="json"
+                last-response="{{account}}">
+    </iron-ajax>
+
+    <div id="nameAndNumber">
+      <div>[[account.name]]</div>
+      <div id="number">[[account.number]]</div>
+    </div>
+    <div id="amount">[[amount]]</div>
+
+  </template>
+  <script>
+    (function() {
+      'use strict';
+      Polymer({
+        is: 'banq-transaction',
+
+        behaviors: [
+          Polymer.PaperItemBehavior
+        ],
+
+        properties: {
+          wide: Boolean,
+          token: String,
+          amount: Number,
+          toAccount: Number
+        },
+
+        observers: [
+          '_handleToken(token)'
+        ],
+
+        generateRequest: function() {
+          var headers = {};
+          headers.Authorization = 'Bearer ' + this.token;
+
+          this.$.ajaxAccount.headers = headers;
+          this.$.ajaxAccount.url = 'localhost:3000/accounts/' + this.toAccount;
+          this.$.ajaxAccount.generateRequest();
+        },
+
+        _handleToken: function(token) {
+          if (token) {
+            this.generateRequest();
+          }
+        }
+      });
+    })();
+  </script>
+</dom-module>

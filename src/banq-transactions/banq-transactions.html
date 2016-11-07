@@ -1,0 +1,77 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/app-route/app-route.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../banq-account/banq-account.html">
+<link rel="import" href="../banq-transaction/banq-transaction.html">
+<link rel="import" href="../banq-styles/banq-styles.html">
+
+<dom-module id="banq-transactions">
+  <template>
+    <style include="banq-styles">
+      :host {
+        @apply --layout-vertical;
+        @apply --layout-flex;
+      }
+
+      paper-listbox {
+        --paper-listbox-background-color: transparent;
+      }
+    </style>
+
+    <iron-ajax  id="ajaxTransactions"
+                method="GET"
+                url="[[url]]"
+                handle-as="json"
+                last-response="{{transactions}}">
+    </iron-ajax>
+
+    <paper-listbox attr-for-selected="number" selected="{{transactionData.transaction}}">
+      <template is="dom-repeat" items="[[transactions]]" as="transaction">
+        <banq-transaction wide$="[[wide]]"
+                          token="{{token}}"
+                          amount="[[transaction.amount]]"
+                          to-account="[[transaction.toAccount]]">
+        </banq-transaction>
+      </template>
+    </paper-listbox>
+  </template>
+  <script>
+    (function() {
+      'use strict';
+      Polymer({
+        is: 'banq-transactions',
+
+        properties: {
+          wide: Boolean,
+          url: String,
+          token: {
+            type: String,
+            notify: true,
+            value: null
+          }
+        },
+
+        observers: [
+          '_handleToken(token)'
+        ],
+
+        generateRequest: function() {
+          var headers = {};
+          headers.Authorization = 'Bearer ' + this.token;
+
+          this.$.ajaxTransactions.headers = headers;
+          this.$.ajaxTransactions.generateRequest();
+        },
+
+        _handleToken: function(token) {
+          if (token) {
+            this.generateRequest();
+          }
+        }
+      });
+    })();
+  </script>
+</dom-module>

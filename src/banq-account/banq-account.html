@@ -1,0 +1,58 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item-behavior.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item-shared-styles.html">
+<link rel="import" href="../banq-styles/banq-styles.html">
+
+<dom-module id="banq-account">
+  <template>
+    <style include="paper-item-shared-styles"></style>
+    <style include="banq-styles">
+      :host {
+        @apply --layout-horizontal;
+        @apply --subheading;
+        padding: 1%;
+      }
+
+      #nameAndNumber {
+        @apply --layout-vertical;
+        @apply --layout-flex;
+      }
+
+      #number {
+        color: var(--primary-color);
+        @apply --body1;
+      }
+
+      #balance {
+        @apply --layout-self-center;
+        font-weight: bold;
+      }
+    </style>
+
+    <div id="nameAndNumber">
+      <div>[[name]]</div>
+      <div id="number">[[number]]</div>
+    </div>
+    <div id="balance">[[balance]]</div>
+
+  </template>
+  <script>
+    (function() {
+      'use strict';
+      Polymer({
+        is: 'banq-account',
+
+        properties: {
+          wide: Boolean,
+          name: String,
+          number: String,
+          balance: Number
+        },
+
+        behaviors: [
+          Polymer.PaperItemBehavior
+        ]
+      });
+    })();
+  </script>
+</dom-module>
