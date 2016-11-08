@@ -39,11 +39,6 @@
       #headerBalance {
         color: var(--secondary-text-color);
       }
-
-      #transactionsAccount {
-        border-bottom-style: solid;
-        border-bottom-width: thin;
-      }
     </style>
 
     <app-route  route="{{route}}"
@@ -76,12 +71,6 @@
         </paper-listbox>
       </div>
       <div data-page="[[accountData.accountNumber]]">
-        <banq-account id="transactionsAccount"
-                      wide$="[[wide]]"
-                      name="[[selectedAccount.name]]"
-                      number="[[selectedAccount.number]]"
-                      balance="[[selectedAccount.balance]]">
-        </banq-account>
         <banq-transactions  wide$="[[wide]]"
                             url="http://localhost:3000/transactions"
                             token="{{token}}"

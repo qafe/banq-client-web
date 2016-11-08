@@ -12,7 +12,6 @@
       :host {
         @apply --layout-horizontal;
         @apply --layout-wrap;
-        padding-top: 1%;
       }
 
       paper-button {
@@ -27,23 +26,47 @@
         font-weight: normal;;
       }
 
+      #transactionsAccount {
+        border-bottom-style: solid;
+        border-bottom-width: thin;
+        margin-bottom: 1%;
+        width: 100%;
+      }
+
       banq-transactions-list, banq-transfer {
         width: 100%;
       }
     </style>
+
+    <iron-ajax  id="ajaxAccount"
+                method="GET"
+                url="[[url]]"
+                handle-as="json"
+                last-error="{{error}}"
+                last-response="{{account}}">
+    </iron-ajax>
+
+    <banq-account id="transactionsAccount"
+                  wide$="[[wide]]"
+                  name="[[account.name]]"
+                  number="[[account.id]]"
+                  balance="[[account.balance]]">
+    </banq-account>
     <paper-button raised toggles active="{{!showTransfer}}">Transactions</paper-button>
     <paper-button raised toggles active="{{showTransfer}}">Transfer</paper-button>
-    <banq-transactions-list hidden$="[[showTransfer]]"
+    <banq-transactions-list id="transactionsList"
+                            hidden$="[[showTransfer]]"
                             wide$="[[wide]]"
-                            url="http://localhost:3000/transactions"
+                            url="[[url]]"
                             token="{{token}}"
                             account-number="[[accountNumber]]">
     </banq-transactions-list>
     <banq-transfer  hidden$="[[!showTransfer]]"
                     wide$="[[wide]]"
-                    url="http://localhost:3000/transactions"
+                    url="[[url]]"
                     token="{{token}}"
-                    account-number="[[accountNumber]]">
+                    account-number="[[accountNumber]]"
+                    on-created="_handleTransactionCreated">
     </banq-transfer>
   </template>
   <script>
@@ -66,6 +89,38 @@
             reflectToAttribute: true,
             value: false
           }
+        },
+
+        observers: [
+          '_triggerRequest(token, accountNumber)',
+          '_handleError(error)'
+        ],
+
+        generateRequest: function() {
+          if (this.token && this.accountNumber) {
+            var headers = {};
+            headers.Authorization = 'Bearer ' + this.token;
+
+            this.$.ajaxAccount.headers = headers;
+            this.$.ajaxAccount.url = 'http://localhost:3000/accounts/' + this.accountNumber;
+            this.$.ajaxAccount.generateRequest();
+          }
+        },
+
+        _triggerRequest: function(token, accountNumber) {
+          this.generateRequest();
+        },
+
+        _handleError: function(error) {
+          if (error && error.status == '403') {
+            this.token = null;
+          }
+        },
+
+        _handleTransactionCreated: function(event) {
+          this.generateRequest();
+          this.$.transactionsList.generateRequest();
+          this.showTransfer = false;
         }
       });
     })();

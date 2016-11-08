@@ -2,28 +2,59 @@
 <link rel="import" href="../../bower_components/app-route/app-route.html">
 <link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../../bower_components/iron-icons/communication-icons.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../banq-styles/banq-styles.html">
 
 <dom-module id="banq-transfer">
   <template>
     <style include="banq-styles">
+      :host {
+        @apply --layout-vertical;
+      }
 
+      iron-icon {
+        margin-bottom: 1%;
+      }
+
+      paper-button {
+        margin-top: 1%;
+      }
     </style>
 
     <iron-ajax  id="ajaxTransactions"
-                method="GET"
+                method="POST"
+                url="[[url]]"
+                content-type="application/json"
                 handle-as="json"
                 last-error="{{error}}"
                 last-response="{{transactions}}">
     </iron-ajax>
 
-    FOO
+    <paper-input id="amount" required label="Amount" type="number">
+      <div prefix>€</div>
+    </paper-input>
+    <paper-input id="recipient" required label="Name recipient">
+      <paper-icon-button title="Contacts" alt="Contacts" icon="communication:contacts" suffix></paper-icon-button>
+    </paper-input>
+    <paper-input id="toAccount" required label="Account number"></paper-input>
+    <paper-input id="message" required label="Message"></paper-input>
+    <paper-button on-tap="_createTransaction">Submit</paper-button>
+
   </template>
   <script>
     (function() {
       'use strict';
       Polymer({
         is: 'banq-transfer',
+
+        /**
+         * Fired when a `transaction` is created.
+         *
+         * @event created
+         */
 
         properties: {
           wide: Boolean,
@@ -37,23 +68,32 @@
         },
 
         observers: [
-          '_triggerRequest(token, accountNumber)',
           '_handleError(error)'
         ],
 
-        generateRequest: function() {
+        reset: function() {
+          this.$.amount.value = undefined;
+          this.$.recipient.value = undefined;
+          this.$.toAccount.value = undefined;
+          this.$.message.value = undefined;
+        },
+
+        _createTransaction: function() {
+          let transaction = {};
+          transaction.amount = Number.parseFloat(this.$.amount.value);
+          transaction.fromAccount = this.accountNumber;
+          transaction.toAccount = this.$.toAccount.value;
+          transaction.message = this.$.message.value;
+
           var headers = {};
           headers.Authorization = 'Bearer ' + this.token;
 
           this.$.ajaxTransactions.headers = headers;
-          this.$.ajaxTransactions.url = this.url + '?q=' + this.accountNumber;
+          this.$.ajaxTransactions.body = transaction;
           this.$.ajaxTransactions.generateRequest();
-        },
 
-        _triggerRequest: function(token, accountNumber) {
-          if (token && accountNumber) {
-            // this.generateRequest();
-          }
+          this.fire('created');
+          this.reset();
         },
 
         _handleError: function(error) {

@@ -1,4 +1,6 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/iron-collapse/iron-collapse.html">
 <link rel="import" href="../../bower_components/paper-item/paper-item-behavior.html">
 <link rel="import" href="../../bower_components/paper-item/paper-item-shared-styles.html">
 <link rel="import" href="../banq-styles/banq-styles.html">
@@ -9,6 +11,7 @@
     <style include="banq-styles">
       :host {
         @apply --layout-horizontal;
+        @apply --layout-wrap;
         @apply --subheading;
         padding: 1%;
       }
@@ -27,6 +30,10 @@
         @apply --layout-self-center;
         font-weight: bold;
       }
+
+      #message {
+        width: 100%;
+      }
     </style>
 
     <iron-ajax  id="ajaxAccount"
@@ -41,8 +48,11 @@
       <div>[[account.name]]</div>
       <div id="number">[[account.id]]</div>
     </div>
-    <div id="amount"><span hidden$="[[_isDebit(accountNumber, transaction)]]">-</span>[[_formatCurrency(transaction.amount)]]</div>
+    <div id="amount"><span hidden$="[[!_isDebit(accountNumber, transaction)]]">-</span>[[_formatCurrency(transaction.amount)]]</div>
 
+    <iron-collapse id="message">
+      <div>[[transaction.message]]</div>
+    </iron-collapse>
   </template>
   <script>
     (function() {
@@ -59,6 +69,10 @@
           token: String,
           accountNumber: String,
           transaction: Object
+        },
+
+        listeners: {
+          'tap': '_handleTap'
         },
 
         observers: [
@@ -82,6 +96,12 @@
             this.generateRequest();
           }
         },
+        
+        _handleError: function(error) {
+          if (error && error.status == '403') {
+            this.token = null;
+          }
+        },
 
         _formatCurrency: function(amount) {
           var l10n = new Intl.NumberFormat("nl-NL", {"minimumFractionDigits": 2, "maximumFractionDigits": 2})
@@ -89,13 +109,11 @@
         },
 
         _isDebit: function(accountNumber, transaction) {
-          return this.transaction.fromAccount == this.accountNumber;
+          return transaction.fromAccount == this.accountNumber;
         },
 
-        _handleError: function(error) {
-          if (error && error.status == '403') {
-            this.token = null;
-          }
+        _handleTap: function() {
+          this.$.message.toggle();
         }
       });
     })();

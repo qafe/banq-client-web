@@ -59,18 +59,18 @@
         ],
 
         generateRequest: function() {
-          var headers = {};
-          headers.Authorization = 'Bearer ' + this.token;
+          if (this.token && this.accountNumber) {
+            var headers = {};
+            headers.Authorization = 'Bearer ' + this.token;
 
-          this.$.ajaxTransactions.headers = headers;
-          this.$.ajaxTransactions.url = this.url + '?q=' + this.accountNumber;
-          this.$.ajaxTransactions.generateRequest();
+            this.$.ajaxTransactions.headers = headers;
+            this.$.ajaxTransactions.url = this.url + '?q=' + this.accountNumber;
+            this.$.ajaxTransactions.generateRequest();
+          }
         },
 
         _triggerRequest: function(token, accountNumber) {
-          if (token && accountNumber) {
-            this.generateRequest();
-          }
+          this.generateRequest();
         },
 
         _handleError: function(error) {
