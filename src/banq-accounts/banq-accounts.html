@@ -83,11 +83,10 @@
                       balance="[[selectedAccount.balance]]">
         </banq-account>
         <banq-transactions  wide$="[[wide]]"
-                            route="{{accountTail}}"
                             url="http://localhost:3000/transactions"
                             token="{{token}}"
                             account-number="[[selectedAccount.number]]">
-        <banq-transactions>
+        </banq-transactions>
       </div>
     </iron-pages>
 

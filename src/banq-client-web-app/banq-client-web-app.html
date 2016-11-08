@@ -11,6 +11,7 @@
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../../bower_components/iron-media-query/iron-media-query.html">
 <link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../banq-login-credentials/banq-login-credentials.html">
 <link rel="import" href="../banq-accounts/banq-accounts.html">
@@ -87,7 +88,6 @@
                             url="http://localhost:3000/accounts"
                             token="{{token}}">
             </banq-accounts>
-            <div  data-page="transactions">Transactions</div>
             <div data-page="addresses">Addresses</div>
           </iron-pages>
         </div>
@@ -122,7 +122,7 @@
 
       _verifyPageAccess: function(token, page) {
         if (!token && page != 'login') {
-          this.set('pageData.page', 'login');
+          this.set('route.path', 'login');
         }
       }
     });

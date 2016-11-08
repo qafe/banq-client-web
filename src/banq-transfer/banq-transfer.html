@@ -1,0 +1,67 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/app-route/app-route.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../banq-styles/banq-styles.html">
+
+<dom-module id="banq-transfer">
+  <template>
+    <style include="banq-styles">
+
+    </style>
+
+    <iron-ajax  id="ajaxTransactions"
+                method="GET"
+                handle-as="json"
+                last-error="{{error}}"
+                last-response="{{transactions}}">
+    </iron-ajax>
+
+    FOO
+  </template>
+  <script>
+    (function() {
+      'use strict';
+      Polymer({
+        is: 'banq-transfer',
+
+        properties: {
+          wide: Boolean,
+          url: String,
+          token: {
+            type: String,
+            notify: true,
+            value: null
+          },
+          accountNumber: String
+        },
+
+        observers: [
+          '_triggerRequest(token, accountNumber)',
+          '_handleError(error)'
+        ],
+
+        generateRequest: function() {
+          var headers = {};
+          headers.Authorization = 'Bearer ' + this.token;
+
+          this.$.ajaxTransactions.headers = headers;
+          this.$.ajaxTransactions.url = this.url + '?q=' + this.accountNumber;
+          this.$.ajaxTransactions.generateRequest();
+        },
+
+        _triggerRequest: function(token, accountNumber) {
+          if (token && accountNumber) {
+            // this.generateRequest();
+          }
+        },
+
+        _handleError: function(error) {
+          if (error && error.status == '403') {
+            this.token = null;
+          }
+        }
+      });
+    })();
+  </script>
+</dom-module>
