@@ -15,6 +15,7 @@
 <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../banq-login-credentials/banq-login-credentials.html">
 <link rel="import" href="../banq-accounts/banq-accounts.html">
+<link rel="import" href="../banq-addresses/banq-addresses.html">
 <link rel="import" href="../banq-styles/banq-styles.html">
 
 <dom-module id="banq-client-web-app">
@@ -88,7 +89,7 @@
                             url="http://localhost:3000/accounts"
                             token="{{token}}">
             </banq-accounts>
-            <div data-page="addresses">Addresses</div>
+            <banq-addresses data-page="addresses">Addresses</banq-addresses>
           </iron-pages>
         </div>
       </app-header-layout>

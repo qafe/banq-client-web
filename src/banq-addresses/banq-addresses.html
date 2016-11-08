@@ -1,0 +1,33 @@
+<!-- Load the Polymer.Element base class -->
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+
+<dom-module id="banq-addresses">
+  <template>
+    <style>
+      div {
+        color: blue;
+      }
+    </style>
+    <div>[[foo]]</div>
+  </template>
+  <script>
+    class BanqAdresses extends Polymer.Element {
+      static get is() { return 'banq-addresses'; }
+      static get config() {
+       return {
+          properties: {
+            foo: String
+          }
+        }
+      }
+      constructor() {
+        super();
+      }
+      connectedCallback() {
+        super.connectedCallback();
+      }
+    }
+
+    customElements.define(BanqAdresses.is, BanqAdresses);
+  </script>
+</dom-module>
