@@ -2,7 +2,7 @@
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
-<link rel="import" href="banq-transactions-list.html">
+<link rel="import" href="banq-transaction-list.html">
 <link rel="import" href="banq-transfer.html">
 <link rel="import" href="banq-styles.html">
 
@@ -33,7 +33,7 @@
         width: 100%;
       }
 
-      banq-transactions-list, banq-transfer {
+      banq-transaction-list, banq-transfer {
         width: 100%;
       }
     </style>
@@ -54,13 +54,13 @@
     </banq-account>
     <paper-button raised toggles active="{{!showTransfer}}">Transactions</paper-button>
     <paper-button raised toggles active="{{showTransfer}}">Transfer</paper-button>
-    <banq-transactions-list id="transactionsList"
+    <banq-transaction-list id="transactionsList"
                             hidden$="[[showTransfer]]"
                             wide$="[[wide]]"
                             url="[[url]]"
                             token="{{token}}"
                             account-number="[[accountNumber]]">
-    </banq-transactions-list>
+    </banq-transaction-list>
     <banq-transfer  hidden$="[[!showTransfer]]"
                     wide$="[[wide]]"
                     url="[[url]]"

@@ -1,0 +1,114 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/iron-collapse/iron-collapse.html">
+<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-item/paper-item-behavior.html">
+<link rel="import" href="../bower_components/paper-item/paper-item-shared-styles.html">
+<link rel="import" href="banq-styles.html">
+
+<dom-module id="banq-address">
+  <template>
+    <style include="paper-item-shared-styles"></style>
+    <style include="banq-styles">
+      :host {
+        @apply --layout-vertical;
+        @apply --subheading;
+        padding: 1%;
+      }
+
+      #number {
+        @apply --body1;
+        color: var(--primary-color);
+      }
+
+      #buttons {
+        @apply --layout-horizontal;
+        padding-top: 1%;
+        width: 100%;
+      }
+
+      #buttons > .button {
+        @apply --layout-horizontal;
+        @apply --layout-flex;
+        margin: 1%;
+      }
+
+      #buttons > .button > iron-icon {
+        padding-right: 4%;
+      }
+
+      .button {
+        @apply --layout-center-justified;
+        @apply --button;
+        padding: 2%;
+        margin: auto;
+        border-radius: 4%;
+      }
+    </style>
+
+    <div id="name">[[address.name]]</div>
+    <div id="number">[[address.number]]</div>
+    <iron-collapse id="buttons" opened="[[opened]]" no-animation>
+      <div class="button" on-tap="_fireEditEvent"><iron-icon icon="create"></iron-icon>Edit</div>
+      <div class="button" on-tap="_copyNameAndNumber"><iron-icon icon="content-copy"></iron-icon>Copy</div>
+      <div class="button" on-tap="_fireTransverEvent"><iron-icon icon="payment"></iron-icon>Transfer</div>
+    </iron-collapse>
+
+  </template>
+  <script>
+    (function() {
+      'use strict';
+      Polymer({
+        is: 'banq-address',
+
+        behaviors: [
+          Polymer.PaperItemBehavior
+        ],
+
+        properties: {
+          wide: Boolean,
+          token: String,
+          address: Object,
+          opened: Boolean
+        },
+
+        listeners: {
+          'tap': '_handleTap'
+        },
+
+        _handleTap: function() {
+          this.opened = !this.opened;
+        },
+
+        _copyNameAndNumber: function() {
+          let name = this.$.name;
+          let number = this.$.number;
+
+          let range = document.createRange();
+          range.selectNode(number);
+          range.insertNode(name);
+
+          let selection = window.getSelection();
+          if(selection.rangeCount > 0) {
+            selection.removeAllRanges();
+          }
+
+          selection.addRange(range);
+
+          document.execCommand('copy');
+
+          selection.removeAllRanges();
+        },
+
+        _fireEditEvent: function() {
+          this.fire('edit', this.address);
+        },
+
+        _fireTransverEvent: function() {
+          this.fire('transfer', this.address);
+        }
+      });
+    })();
+  </script>
+</dom-module>

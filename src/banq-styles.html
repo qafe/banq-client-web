@@ -92,6 +92,8 @@
 
         --button: {
           @apply --paper-font-button;
+          background: var(--primary-color);
+          color: white;
         };
       }
 
@@ -108,8 +110,7 @@
       }
 
       paper-button {
-        background: var(--primary-color);
-        color: white;
+        @apply --button;
       }
     </style>
   </template>

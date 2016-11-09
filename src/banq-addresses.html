@@ -1,0 +1,86 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="banq-address-list.html">
+<link rel="import" href="banq-address-crud.html">
+<link rel="import" href="banq-styles.html">
+
+<dom-module id="banq-addresses">
+  <template>
+    <style include="banq-styles">
+      :host, iron-pages {
+        @apply --layout-vertical;
+        @apply --layout-flex;
+      }
+
+      banq-address-list {
+        @apply --layout-flex;
+      }
+
+      paper-fab {
+        @apply --layout-self-end;
+        background-color: var(--primary-color);
+        margin-right: 5%;
+        margin-bottom: 5%;
+      }
+    </style>
+
+    <iron-pages id="pages"
+                attr-for-selected="data-page"
+                fallback-selection="address-list">
+      <banq-address-list  data-page="address-list"
+                          wide$="[[wide]]"
+                          url="[[url]]"
+                          token="{{token}}"
+                          on-edit="_showAddressCrudView">
+      </banq-address-list>
+      <banq-address-crud  id="addressCrud"
+                          data-page="address-crud"
+                          wide$="[[wide]]"
+                          url="[[url]]"
+                          token="{{token}}"
+                          on-canceled="_showAddressListView"
+                          on-created="_showAddressListView"
+                          on-deleted="_showAddressListView">
+      </banq-address-crud>
+    </iron-pages>
+
+    <paper-fab icon="add" title="Add Contact" on-tap="_showAddressCrudViewForCreate"></paper-fab>
+
+  </template>
+  <script>
+    (function() {
+      'use strict';
+      Polymer({
+        is: 'banq-addresses',
+
+        properties: {
+          wide: Boolean,
+          url: String,
+          token: {
+            type: String,
+            notify: true,
+            value: null
+          }
+        },
+
+        _showAddressCrudView: function(event) {
+          this.$.addressCrud.create = false;
+          this.$.addressCrud.address = event.detail;
+          this.$.pages.selected = 'address-crud';
+        },
+
+        _showAddressCrudViewForCreate: function() {
+          this.$.addressCrud.create = true;
+          this.$.pages.selected = 'address-crud';
+        },
+
+        _showAddressListView: function() {
+          this.$.pages.selected = 'address-list';
+        }
+      });
+    })();
+  </script>
+</dom-module>

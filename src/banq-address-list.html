@@ -1,0 +1,90 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="banq-address.html">
+<link rel="import" href="banq-styles.html">
+
+<dom-module id="banq-address-list">
+  <template>
+    <style include="banq-styles">
+      :host {
+        @apply --layout-vertical;
+      }
+
+      paper-listbox {
+        --paper-listbox-background-color: transparent;
+      }
+    </style>
+
+    <iron-ajax  id="ajaxAdresses"
+                method="GET"
+                handle-as="json"
+                last-error="{{error}}"
+                last-response="{{addresses}}">
+    </iron-ajax>
+
+    <paper-listbox selected="{{selected}}">
+      <template is="dom-repeat" items="[[addresses]]" as="address">
+        <banq-address wide$="[[wide]]"
+                      token="{{token}}"
+                      address="[[address]]"
+                      opened$="[[_isAddressOpened(index, selected)]]">
+        </banq-address>
+      </template>
+    </paper-listbox>
+  </template>
+  <script>
+    (function() {
+      'use strict';
+      Polymer({
+        is: 'banq-address-list',
+
+        properties: {
+          wide: Boolean,
+          url: String,
+          token: {
+            type: String,
+            notify: true,
+            value: null
+          },
+          selected: {
+            type: Object,
+            notify: true
+          }
+        },
+
+        observers: [
+          '_triggerRequest(token)',
+          '_handleError(error)'
+        ],
+
+        generateRequest: function() {
+          if (this.token) {
+            var headers = {};
+            headers.Authorization = 'Bearer ' + this.token;
+
+            this.$.ajaxAdresses.headers = headers;
+            this.$.ajaxAdresses.url = this.url;
+            this.$.ajaxAdresses.generateRequest();
+          }
+        },
+
+        _triggerRequest: function(token) {
+          this.generateRequest();
+        },
+
+        _handleError: function(error) {
+          if (error && error.status == '403') {
+            this.token = null;
+          }
+        },
+
+        _isAddressOpened: function(index, selectedIndex) {
+          return index == selectedIndex;
+        }
+      });
+    })();
+  </script>
+</dom-module>

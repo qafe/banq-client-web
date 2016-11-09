@@ -7,14 +7,19 @@
 <link rel="import" href="../bower_components/app-route/app-location.html">
 <link rel="import" href="../bower_components/app-route/app-route.html">
 <link rel="import" href="../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
+<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../bower_components/iron-icons/communication-icons.html">
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../bower_components/iron-media-query/iron-media-query.html">
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
-<link rel="import" href="banq-login-credentials.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../bower_components/paper-menu/paper-menu.html">
 <link rel="import" href="banq-accounts.html">
+<link rel="import" href="banq-addresses.html">
+<link rel="import" href="banq-login-credentials.html">
 <link rel="import" href="banq-styles.html">
 
 <dom-module id="banq-client-web-app">
@@ -38,12 +43,23 @@
         opacity: 0;
       }
 
-      #q {
-        color: var(--secondary-text-color);
+      paper-item > iron-icon {
+        color: var(--primary-color);
+        margin-right: 4%;
       }
 
-      app-toolbar > paper-button {
-        font-size: 15px;
+      paper-menu paper-item {
+        border-left-width: thick;
+        border-left-style: solid;
+        border-left-color: transparent;
+      }
+
+      paper-menu paper-item.selectedMenuItem {
+        border-left-color: var(--primary-color);
+      }
+
+      #q {
+        color: var(--secondary-text-color);
       }
     </style>
 
@@ -60,8 +76,15 @@
     </app-route>
 
     <app-drawer-layout fullbleed force-narrow>
-      <app-drawer>
-        <!-- Add menu -->
+      <app-drawer id="drawer">
+        <paper-menu selectable="paper-item"
+                    selected="{{pageData.page}}"
+                    attr-for-selected="data-page"
+                    selected-class="selectedMenuItem"
+                    on-iron-select="_closeDrawer">
+          <paper-item data-page="accounts"><iron-icon icon="account-balance"></iron-icon>Accounts</paper-item>
+          <paper-item data-page="addresses"><iron-icon icon="communication:contacts"></iron-icon>Address Book</paper-item>
+        </paper-menu>
       </app-drawer>
       <app-header-layout fullbleed>
         <app-header fixed condenses shadow>
@@ -88,7 +111,13 @@
                             url="http://localhost:3000/accounts"
                             token="{{token}}">
             </banq-accounts>
-            <div data-page="addresses">Addresses</div>
+            <banq-addresses data-page="addresses"
+                            wide$="[[wide]]"
+                            route="{{pageTail}}"
+                            prefix-pattern="/addresses"
+                            url="http://localhost:3000/addresses"
+                            token="{{token}}">
+            </banq-addresses>
           </iron-pages>
         </div>
       </app-header-layout>
@@ -124,6 +153,10 @@
         if (!token && page != 'login') {
           this.set('route.path', 'login');
         }
+      },
+
+      _closeDrawer: function() {
+        this.$.drawer.opened = false;
       }
     });
   </script>
