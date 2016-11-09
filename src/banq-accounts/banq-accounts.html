@@ -74,7 +74,8 @@
         <banq-transactions  wide$="[[wide]]"
                             url="http://localhost:3000/transactions"
                             token="{{token}}"
-                            account-number="[[selectedAccount.number]]">
+                            account-number="[[selectedAccount.number]]"
+                            on-created="_handleTransactionCreated">
         </banq-transactions>
       </div>
     </iron-pages>
@@ -109,17 +110,17 @@
         ],
 
         generateRequest: function() {
-          var headers = {};
-          headers.Authorization = 'Bearer ' + this.token;
+          if (this.token) {
+            var headers = {};
+            headers.Authorization = 'Bearer ' + this.token;
 
-          this.$.ajaxAccounts.headers = headers;
-          this.$.ajaxAccounts.generateRequest();
+            this.$.ajaxAccounts.headers = headers;
+            this.$.ajaxAccounts.generateRequest();
+          }
         },
 
         _handleToken: function(token) {
-          if (token) {
-            this.generateRequest();
-          }
+          this.generateRequest();
         },
 
         _handleSelectedAccountNumber: function(accountNumber) {
@@ -139,6 +140,10 @@
           if (error && error.status == '403') {
             this.token = null;
           }
+        },
+
+        _handleTransactionCreated: function(event) {
+          this.generateRequest();
         }
       });
     })();
