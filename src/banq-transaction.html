@@ -1,9 +1,9 @@
-<link rel="import" href="../../bower_components/polymer/polymer.html">
-<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
-<link rel="import" href="../../bower_components/iron-collapse/iron-collapse.html">
-<link rel="import" href="../../bower_components/paper-item/paper-item-behavior.html">
-<link rel="import" href="../../bower_components/paper-item/paper-item-shared-styles.html">
-<link rel="import" href="../banq-styles/banq-styles.html">
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../bower_components/iron-collapse/iron-collapse.html">
+<link rel="import" href="../bower_components/paper-item/paper-item-behavior.html">
+<link rel="import" href="../bower_components/paper-item/paper-item-shared-styles.html">
+<link rel="import" href="banq-styles.html">
 
 <dom-module id="banq-transaction">
   <template>
@@ -96,7 +96,7 @@
             this.generateRequest();
           }
         },
-        
+
         _handleError: function(error) {
           if (error && error.status == '403') {
             this.token = null;
