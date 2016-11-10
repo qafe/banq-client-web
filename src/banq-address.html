@@ -51,8 +51,8 @@
     <div id="number">[[address.number]]</div>
     <template is="dom-if" if="[[!simple]]">
       <iron-collapse id="buttons" opened="[[opened]]" no-animation>
-        <div class="button" on-tap="_fireEditEvent"><iron-icon icon="create"></iron-icon>Edit</div>
-        <div class="button" on-tap="_copyNameAndNumber"><iron-icon icon="content-copy"></iron-icon>Copy</div>
+        <div id="buttonEdit" class="button" on-tap="_fireEditEvent"><iron-icon icon="create"></iron-icon>Edit</div>
+        <div id="buttonCopy" class="button" on-tap="_copyNameAndNumber"><iron-icon icon="content-copy"></iron-icon>Copy</div>
       </iron-collapse>
     </template>
 
@@ -68,8 +68,6 @@
         ],
 
         properties: {
-          wide: Boolean,
-          token: String,
           address: Object,
           opened: Boolean,
           simple: {

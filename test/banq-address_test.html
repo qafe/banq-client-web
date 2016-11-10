@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+    <title>banq-address test</title>
+
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../../web-component-tester/browser.js"></script>
+
+    <link rel="import" href="../src/banq-address.html">
+  </head>
+  <body>
+    <test-fixture id="banqAddress">
+      <template>
+        <banq-address></banq-address>
+      </template>
+    </test-fixture>
+
+    <script>
+      suite('<banq-address>', function() {
+
+        let banqAddress;
+        let address = {};
+        setup(function() {
+          address.id = 42;
+          address.userId = 21;
+          address.name = 'D J Trump';
+          address.number = 'NL22BANQ0102232698';
+
+          banqAddress = fixture('banqAddress');
+          banqAddress.address = address;
+        });
+
+        test('instantiating the element works', function() {
+          expect(banqAddress.is).to.equal('banq-address');
+        });
+
+        test('setting the address property works', function() {
+          let actualName = banqAddress.$$('#name').textContent;
+          let actualNumber = banqAddress.$$('#number').textContent;
+
+          expect(actualName).to.equal(address.name);
+          expect(actualNumber).to.equal(address.number);
+        });
+
+        test('clicking the element sets the opened property from false to true', function() {
+          banqAddress.opened = false;
+          banqAddress.click();
+
+          expect(banqAddress.opened).to.be.true;
+        });
+
+        test('clicking the element sets the opened property from true to false', function() {
+          banqAddress.opened = true;
+          banqAddress.click();
+
+          expect(banqAddress.opened).to.be.false;
+        });
+
+        test('when the simple property is present the element has no buttons', function(done) {
+          banqAddress.simple = true;
+          flush(function() {
+            let actual = banqAddress.$$('#buttons');
+            expect(actual).to.be.null;
+            done();
+          });
+        });
+
+        test('when the simple property is NOT present the element has buttons', function(done) {
+          banqAddress.simple = false;
+          flush(function() {
+            let actual = banqAddress.$$('#buttons');
+            expect(actual).to.be.not.null;
+            done();
+          });
+        });
+
+        test('when the edit button is clicked an edit event is dispatched havind the address as detail', function(done) {
+          flush(function() {
+            banqAddress.addEventListener('edit', function(event) {
+              expect(event.detail).to.deep.equal(address);
+              done();
+            })
+
+            banqAddress.$$('#buttonEdit').click();
+          });
+        });
+
+      });
+    </script>
+  </body>
+</html>
