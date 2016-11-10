@@ -3,9 +3,12 @@
 <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../bower_components/iron-icons/communication-icons.html">
+<link rel="import" href="../bower_components/iron-scroll-threshold/iron-scroll-threshold.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="banq-overlay.html">
+<link rel="import" href="banq-address-list.html">
 <link rel="import" href="banq-styles.html">
 
 <dom-module id="banq-transfer">
@@ -22,6 +25,16 @@
       paper-button {
         margin-top: 1%;
       }
+
+      #addressListOverlay {
+        @apply --layout-vertical;
+        box-shadow: rgba(0, 0, 0, 0.24) -2px 5px 12px 0px, rgba(0, 0, 0, 0.12) 0px 0px 12px 0px;
+        background-color: white;
+        max-height: 70%;
+        width: 80%;
+        padding: 2%;
+        top: 20%;
+      }
     </style>
 
     <iron-ajax  id="ajaxTransactions"
@@ -36,13 +49,30 @@
     <paper-input id="amount" required label="Amount" type="number">
       <div prefix>€</div>
     </paper-input>
-    <paper-input id="recipient" required label="Name recipient">
-      <paper-icon-button title="Contacts" alt="Contacts" icon="communication:contacts" suffix></paper-icon-button>
+    <paper-input id="recipient" required label="Name recipient" value="[[address.name]]">
+      <paper-icon-button  suffix
+                          icon="communication:contacts"
+                          title="Contacts"
+                          alt="Contacts"
+                          on-tap="_showAdressList">
+      </paper-icon-button>
     </paper-input>
-    <paper-input id="toAccount" required label="Account number"></paper-input>
+    <paper-input id="toAccount" required label="Account number" value="[[address.number]]"></paper-input>
     <paper-input id="message" required label="Message"></paper-input>
     <paper-button on-tap="_createTransaction">Submit</paper-button>
 
+    <banq-overlay id="addressListOverlay">
+      <iron-scroll-threshold>
+        <banq-address-list  id="addressList"
+                            simple
+                            wide$="[[wide]]"
+                            url="http://localhost:3000/addresses/"
+                            token="{{token}}"
+                            selected="{{address}}">
+        </banq-address-list>
+      </iron-scroll-threshold>
+      <paper-button on-tap="_hideAddressList">Cancel</paper-button>
+    </banq-overlay>
   </template>
   <script>
     (function() {
@@ -68,7 +98,8 @@
         },
 
         observers: [
-          '_handleError(error)'
+          '_handleError(error)',
+          '_hideAddressList(address)'
         ],
 
         reset: function() {
@@ -100,6 +131,14 @@
           if (error && error.status == '403') {
             this.token = null;
           }
+        },
+
+        _showAdressList: function() {
+          this.$.addressListOverlay.opened = true;
+        },
+
+        _hideAddressList: function() {
+          this.$.addressListOverlay.opened = false;
         }
       });
     })();

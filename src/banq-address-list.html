@@ -25,12 +25,13 @@
                 last-response="{{addresses}}">
     </iron-ajax>
 
-    <paper-listbox selected="{{selected}}">
+    <paper-listbox selected-item="{{selectedAddress}}" selected="{{selectedIndex}}">
       <template is="dom-repeat" items="[[addresses]]" as="address">
         <banq-address wide$="[[wide]]"
                       token="{{token}}"
                       address="[[address]]"
-                      opened$="[[_isAddressOpened(index, selected)]]">
+                      simple$="[[simple]]"
+                      opened$="[[_isAddressOpened(index, selectedIndex)]]">
         </banq-address>
       </template>
     </paper-listbox>
@@ -51,13 +52,20 @@
           },
           selected: {
             type: Object,
-            notify: true
+            notify: true,
+            readOnly: true
+          },
+          simple: {
+            type: Boolean,
+            reflectToAttribute: true,
+            value: false
           }
         },
 
         observers: [
           '_triggerRequest(token)',
-          '_handleError(error)'
+          '_handleError(error)',
+          '_computeSelected(selectedAddress)'
         ],
 
         generateRequest: function() {
@@ -83,6 +91,12 @@
 
         _isAddressOpened: function(index, selectedIndex) {
           return index == selectedIndex;
+        },
+
+        _computeSelected: function(selectedAddress) {
+          if (selectedAddress) {
+            this._setSelected(selectedAddress.address);
+          }
         }
       });
     })();

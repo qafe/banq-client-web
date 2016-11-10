@@ -20,17 +20,19 @@
       }
 
       paper-fab {
-        @apply --layout-self-end;
+        position: absolute;
+        right: 1.5em;
+        bottom: 1.5em;
         background-color: var(--primary-color);
-        margin-right: 5%;
-        margin-bottom: 5%;
       }
     </style>
 
     <iron-pages id="pages"
+                selected="{{selectedPage}}"
                 attr-for-selected="data-page"
                 fallback-selection="address-list">
-      <banq-address-list  data-page="address-list"
+      <banq-address-list  id="addressList"
+                          data-page="address-list"
                           wide$="[[wide]]"
                           url="[[url]]"
                           token="{{token}}"
@@ -42,12 +44,17 @@
                           url="[[url]]"
                           token="{{token}}"
                           on-canceled="_showAddressListView"
+                          on-updated="_showAddressListView"
                           on-created="_showAddressListView"
                           on-deleted="_showAddressListView">
       </banq-address-crud>
     </iron-pages>
 
-    <paper-fab icon="add" title="Add Contact" on-tap="_showAddressCrudViewForCreate"></paper-fab>
+    <paper-fab  icon="add"
+                title="Add Contact"
+                hidden$="[[_isAddButtonHidden(selectedPage)]]"
+                on-tap="_showAddressCrudViewForCreate">
+    </paper-fab>
 
   </template>
   <script>
@@ -78,7 +85,12 @@
         },
 
         _showAddressListView: function() {
+          this.$.addressList.generateRequest();
           this.$.pages.selected = 'address-list';
+        },
+
+        _isAddButtonHidden: function(selectedPage) {
+          return 'address-crud' == selectedPage
         }
       });
     })();

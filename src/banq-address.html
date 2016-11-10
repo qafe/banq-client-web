@@ -49,11 +49,12 @@
 
     <div id="name">[[address.name]]</div>
     <div id="number">[[address.number]]</div>
-    <iron-collapse id="buttons" opened="[[opened]]" no-animation>
-      <div class="button" on-tap="_fireEditEvent"><iron-icon icon="create"></iron-icon>Edit</div>
-      <div class="button" on-tap="_copyNameAndNumber"><iron-icon icon="content-copy"></iron-icon>Copy</div>
-      <div class="button" on-tap="_fireTransverEvent"><iron-icon icon="payment"></iron-icon>Transfer</div>
-    </iron-collapse>
+    <template is="dom-if" if="[[!simple]]">
+      <iron-collapse id="buttons" opened="[[opened]]" no-animation>
+        <div class="button" on-tap="_fireEditEvent"><iron-icon icon="create"></iron-icon>Edit</div>
+        <div class="button" on-tap="_copyNameAndNumber"><iron-icon icon="content-copy"></iron-icon>Copy</div>
+      </iron-collapse>
+    </template>
 
   </template>
   <script>
@@ -70,7 +71,12 @@
           wide: Boolean,
           token: String,
           address: Object,
-          opened: Boolean
+          opened: Boolean,
+          simple: {
+            type: Boolean,
+            reflectToAttribute: true,
+            value: false
+          }
         },
 
         listeners: {
@@ -78,7 +84,7 @@
         },
 
         _handleTap: function() {
-          this.opened = !this.opened;
+          this.opened = !(this.simple || this.opened);
         },
 
         _copyNameAndNumber: function() {
@@ -103,10 +109,6 @@
 
         _fireEditEvent: function() {
           this.fire('edit', this.address);
-        },
-
-        _fireTransverEvent: function() {
-          this.fire('transfer', this.address);
         }
       });
     })();

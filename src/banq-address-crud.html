@@ -30,6 +30,14 @@
       }
     </style>
 
+    <iron-ajax  id="ajaxAddressCreate"
+                method="POST"
+                content-type="application/json"
+                handle-as="json"
+                last-error="{{error}}"
+                last-response="{{createResponse}}">
+    </iron-ajax>
+
     <iron-ajax  id="ajaxAddressUpdate"
                 method="PUT"
                 content-type="application/json"
@@ -40,7 +48,6 @@
 
     <iron-ajax  id="ajaxAddressDelete"
                 method="DELETE"
-                content-type="application/json"
                 handle-as="json"
                 last-error="{{error}}"
                 last-response="{{deleteResponse}}">
@@ -65,17 +72,23 @@
          * @event canceled
          */
 
-         /**
-          * Fired when a `address` is updated.
-          *
-          * @event updated
-          */
+        /**
+         * Fired when a `address` is updated.
+         *
+         * @event updated
+         */
 
-          /**
-           * Fired when a `address` is deleted.
-           *
-           * @event deleted
-           */
+        /**
+         * Fired when a `address` is created.
+         *
+         * @event created
+         */
+
+        /**
+         * Fired when a `address` is deleted.
+         *
+         * @event deleted
+         */
 
         properties: {
           wide: Boolean,
@@ -104,15 +117,23 @@
         },
 
         _updateOrCreateAddress: function() {
+          let address = {};
+          address.name = this.$.name.value;
+          address.number = this.$.number.value;
+
           if (this.create) {
+            var headers = {};
+            headers.Authorization = 'Bearer ' + this.token;
+
+            this.$.ajaxAddressCreate.headers = headers;
+            this.$.ajaxAddressCreate.body = address;
+            this.$.ajaxAddressCreate.url = this.url;
+            this.$.ajaxAddressCreate.generateRequest();
 
             this.fire('created');
           } else {
-            let address = {};
             address.id = this.address.id;
             address.userId = this.address.userId;
-            address.name = this.$.name.value;
-            address.number = this.$.number.value;
 
             var headers = {};
             headers.Authorization = 'Bearer ' + this.token;
@@ -133,7 +154,7 @@
           headers.Authorization = 'Bearer ' + this.token;
 
           this.$.ajaxAddressDelete.headers = headers;
-          this.$.ajaxAddressDelete.url = this.url + address.id;
+          this.$.ajaxAddressDelete.url = this.url + this.address.id;
           this.$.ajaxAddressDelete.generateRequest();
 
           this.fire('deleted');

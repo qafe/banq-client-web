@@ -101,21 +101,21 @@
                       fallback-selection="login">
             <banq-login-credentials data-page="login"
                                     wide$="[[wide]]"
-                                    url="http://localhost:3000/login"
+                                    url="http://localhost:3000/login/"
                                     token="{{token}}">
             </banq-login-credentials>
             <banq-accounts  data-page="accounts"
                             wide$="[[wide]]"
                             route="{{pageTail}}"
                             prefix-pattern="/accounts"
-                            url="http://localhost:3000/accounts"
+                            url="http://localhost:3000/accounts/"
                             token="{{token}}">
             </banq-accounts>
             <banq-addresses data-page="addresses"
                             wide$="[[wide]]"
                             route="{{pageTail}}"
                             prefix-pattern="/addresses"
-                            url="http://localhost:3000/addresses"
+                            url="http://localhost:3000/addresses/"
                             token="{{token}}">
             </banq-addresses>
           </iron-pages>
