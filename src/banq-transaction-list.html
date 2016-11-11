@@ -44,7 +44,7 @@
 
         properties: {
           wide: Boolean,
-          url: String,
+          baseUrl: String,
           token: {
             type: String,
             notify: true,
@@ -64,7 +64,7 @@
             headers.Authorization = 'Bearer ' + this.token;
 
             this.$.ajaxTransactions.headers = headers;
-            this.$.ajaxTransactions.url = this.url + '?q=' + this.accountNumber;
+            this.$.ajaxTransactions.url = this.baseUrl + 'transactions/' + '?q=' + this.accountNumber;
             this.$.ajaxTransactions.generateRequest();
           }
         },

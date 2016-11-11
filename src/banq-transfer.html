@@ -39,7 +39,6 @@
 
     <iron-ajax  id="ajaxTransactions"
                 method="POST"
-                url="[[url]]"
                 content-type="application/json"
                 handle-as="json"
                 last-error="{{error}}"
@@ -66,7 +65,7 @@
         <banq-address-list  id="addressList"
                             simple
                             wide$="[[wide]]"
-                            url="http://localhost:3000/addresses/"
+                            base-url="[[baseUrl]]"
                             token="{{token}}"
                             selected="{{address}}">
         </banq-address-list>
@@ -88,7 +87,7 @@
 
         properties: {
           wide: Boolean,
-          url: String,
+          baseUrl: String,
           token: {
             type: String,
             notify: true,
@@ -110,21 +109,24 @@
         },
 
         _createTransaction: function() {
-          let transaction = {};
-          transaction.amount = Number.parseFloat(this.$.amount.value);
-          transaction.fromAccount = this.accountNumber;
-          transaction.toAccount = this.$.toAccount.value;
-          transaction.message = this.$.message.value;
+          if (this.token && this.baseUrl) {
+            let transaction = {};
+            transaction.amount = Number.parseFloat(this.$.amount.value);
+            transaction.fromAccount = this.accountNumber;
+            transaction.toAccount = this.$.toAccount.value;
+            transaction.message = this.$.message.value;
 
-          var headers = {};
-          headers.Authorization = 'Bearer ' + this.token;
+            var headers = {};
+            headers.Authorization = 'Bearer ' + this.token;
 
-          this.$.ajaxTransactions.headers = headers;
-          this.$.ajaxTransactions.body = transaction;
-          this.$.ajaxTransactions.generateRequest();
+            this.$.ajaxTransactions.headers = headers;
+            this.$.ajaxTransactions.url = this.baseUrl + 'transactions/'
+            this.$.ajaxTransactions.body = transaction;
+            this.$.ajaxTransactions.generateRequest();
 
-          this.fire('created');
-          this.reset();
+            this.fire('created');
+            this.reset();
+          }
         },
 
         _handleError: function(error) {

@@ -33,13 +33,13 @@
                 fallback-selection="address-list">
       <banq-address-list  id="addressList"
                           data-page="address-list"
-                          url="[[url]]"
+                          base-url="[[baseUrl]]"
                           token="{{token}}"
                           on-edit="_showAddressCrudView">
       </banq-address-list>
       <banq-address-crud  id="addressCrud"
                           data-page="address-crud"
-                          url="[[url]]"
+                          base-url="[[baseUrl]]"
                           token="{{token}}"
                           on-canceled="_showAddressListView"
                           on-updated="_showAddressListView"
@@ -63,7 +63,7 @@
 
         properties: {
           wide: Boolean,
-          url: String,
+          baseUrl: String,
           token: {
             type: String,
             notify: true,

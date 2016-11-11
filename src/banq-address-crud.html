@@ -91,7 +91,7 @@
          */
 
         properties: {
-          url: String,
+          baseUrl: String,
           token: {
             type: String,
             notify: true,
@@ -129,7 +129,7 @@
 
             this.$.ajaxAddressCreate.headers = headers;
             this.$.ajaxAddressCreate.body = address;
-            this.$.ajaxAddressCreate.url = this.url;
+            this.$.ajaxAddressCreate.url = this.baseUrl + 'addresses/';
             this.$.ajaxAddressCreate.generateRequest();
           } else {
             address.id = this.address.id;
@@ -140,7 +140,7 @@
 
             this.$.ajaxAddressUpdate.headers = headers;
             this.$.ajaxAddressUpdate.body = address;
-            this.$.ajaxAddressUpdate.url = this.url + address.id;
+            this.$.ajaxAddressUpdate.url = this.baseUrl + 'addresses/' + this.address.id;
             this.$.ajaxAddressUpdate.generateRequest();
           }
 
@@ -152,7 +152,7 @@
           headers.Authorization = 'Bearer ' + this.token;
 
           this.$.ajaxAddressDelete.headers = headers;
-          this.$.ajaxAddressDelete.url = this.url + this.address.id;
+          this.$.ajaxAddressDelete.url = this.baseUrl + 'addresses/' + this.address.id;
           this.$.ajaxAddressDelete.generateRequest();
 
           this.reset();

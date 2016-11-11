@@ -101,21 +101,21 @@
                       fallback-selection="login">
             <banq-login-credentials data-page="login"
                                     wide$="[[wide]]"
-                                    url="http://localhost:3000/login/"
+                                    base-url="[[baseUrl]]"
                                     token="{{token}}">
             </banq-login-credentials>
             <banq-accounts  data-page="accounts"
                             wide$="[[wide]]"
                             route="{{pageTail}}"
                             prefix-pattern="/accounts"
-                            url="http://localhost:3000/accounts/"
+                            base-url="[[baseUrl]]"
                             token="{{token}}">
             </banq-accounts>
             <banq-addresses data-page="addresses"
                             wide$="[[wide]]"
                             route="{{pageTail}}"
                             prefix-pattern="/addresses"
-                            url="http://localhost:3000/addresses/"
+                            base-url="[[baseUrl]]"
                             token="{{token}}">
             </banq-addresses>
           </iron-pages>
@@ -130,6 +130,16 @@
       is: 'banq-client-web-app',
 
       properties: {
+        baseUrl: {
+          type: String,
+          value: function() {
+            if (location.hostname == 'localhost' && location.port != 80) {
+              return 'http://localhost:3000/';
+            } else {
+              return 'https://banq.qafe.com/rest/v0/';
+            }
+          }
+        },
         token: {
           type: String,
           value: null
@@ -151,7 +161,7 @@
 
       _verifyPageAccess: function(token, page) {
         if (!token && page != 'login') {
-          this.set('route.path', 'login');
+          this.set('route.path', '/login');
         }
       },
 

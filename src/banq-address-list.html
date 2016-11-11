@@ -41,7 +41,7 @@
         is: 'banq-address-list',
 
         properties: {
-          url: String,
+          baseUrl: String,
           token: {
             type: String,
             notify: true,
@@ -66,12 +66,12 @@
         ],
 
         generateRequest: function() {
-          if (this.token && this.url) {
+          if (this.token && this.baseUrl) {
             var headers = {};
             headers.Authorization = 'Bearer ' + this.token;
 
             this.$.ajaxAdresses.headers = headers;
-            this.$.ajaxAdresses.url = this.url;
+            this.$.ajaxAdresses.url = this.baseUrl + 'addresses/';
             this.$.ajaxAdresses.generateRequest();
           }
         },

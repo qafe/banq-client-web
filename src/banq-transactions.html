@@ -40,7 +40,6 @@
 
     <iron-ajax  id="ajaxAccount"
                 method="GET"
-                url="[[url]]"
                 handle-as="json"
                 last-error="{{error}}"
                 last-response="{{account}}">
@@ -57,13 +56,13 @@
     <banq-transaction-list id="transactionsList"
                             hidden$="[[showTransfer]]"
                             wide$="[[wide]]"
-                            url="[[url]]"
+                            base-url="[[baseUrl]]"
                             token="{{token}}"
                             account-number="[[accountNumber]]">
     </banq-transaction-list>
     <banq-transfer  hidden$="[[!showTransfer]]"
                     wide$="[[wide]]"
-                    url="[[url]]"
+                    base-url="[[baseUrl]]"
                     token="{{token}}"
                     account-number="[[accountNumber]]"
                     on-created="_handleTransactionCreated">
@@ -77,7 +76,7 @@
 
         properties: {
           wide: Boolean,
-          url: String,
+          baseUrl: String,
           token: {
             type: String,
             notify: true,
@@ -97,12 +96,12 @@
         ],
 
         generateRequest: function() {
-          if (this.token && this.accountNumber) {
+          if (this.token && this.accountNumber && this.baseUrl) {
             var headers = {};
             headers.Authorization = 'Bearer ' + this.token;
 
             this.$.ajaxAccount.headers = headers;
-            this.$.ajaxAccount.url = 'http://localhost:3000/accounts/' + this.accountNumber;
+            this.$.ajaxAccount.url = this.baseUrl + 'accounts/' + this.accountNumber;
             this.$.ajaxAccount.generateRequest();
           }
         },
