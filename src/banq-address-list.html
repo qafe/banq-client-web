@@ -27,9 +27,7 @@
 
     <paper-listbox selected-item="{{selectedAddress}}" selected="{{selectedIndex}}">
       <template is="dom-repeat" items="[[addresses]]" as="address">
-        <banq-address wide$="[[wide]]"
-                      token="{{token}}"
-                      address="[[address]]"
+        <banq-address address="[[address]]"
                       simple$="[[simple]]"
                       opened$="[[_isAddressOpened(index, selectedIndex)]]">
         </banq-address>
@@ -43,7 +41,6 @@
         is: 'banq-address-list',
 
         properties: {
-          wide: Boolean,
           url: String,
           token: {
             type: String,
@@ -69,7 +66,7 @@
         ],
 
         generateRequest: function() {
-          if (this.token) {
+          if (this.token && this.url) {
             var headers = {};
             headers.Authorization = 'Bearer ' + this.token;
 

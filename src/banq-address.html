@@ -69,7 +69,11 @@
 
         properties: {
           address: Object,
-          opened: Boolean,
+          opened: {
+            type: Boolean,
+            reflectToAttribute: true,
+            value: false
+          },
           simple: {
             type: Boolean,
             reflectToAttribute: true,

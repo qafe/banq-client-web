@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+    <title>banq-address-list test</title>
+
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../../web-component-tester/browser.js"></script>
+
+    <link rel="import" href="../src/banq-address-list.html">
+  </head>
+  <body>
+    <test-fixture id="banqAddressList">
+      <template>
+        <banq-address-list url="/responds_to_get_with_json" token="1234"></banq-address-list>
+      </template>
+    </test-fixture>
+
+    <script>
+      suite('<banq-address-list>', function() {
+
+        let address1;
+        let address2;
+        let banqAddressList;
+        let server;
+        setup(function() {
+          address1 = {};
+          address1.id = 2;
+          address1.userId = 2;
+          address1.name = 'Koen\'s Account';
+          address1.number = 'NL22BANQ0102232698';
+
+          address2 = {};
+          address2.id = 4;
+          address2.userId = 2;
+          address2.name = 'Bram\'s Account';
+          address2.number = 'NL22BANQ0102232695';
+
+          server = sinon.fakeServer.create();
+          server.respondWith(
+            'GET',
+            /\/responds_to_get_with_json.*/, [
+              200,
+              {'Content-Type': 'application/json'},
+              JSON.stringify([address1, address2])
+            ]
+          );
+
+          banqAddressList = fixture('banqAddressList');
+        });
+
+        teardown(function() {
+          server.restore();
+        });
+
+        test('instantiating the element works', function() {
+          expect(banqAddressList.is).to.equal('banq-address-list');
+        });
+
+        test('upon a successful response from the server <banq-address> elements are created', function(done) {
+          banqAddressList.generateRequest();
+          server.respond();
+
+          flush(function() {
+            let addressElements = Polymer.dom(banqAddressList.root).querySelectorAll('banq-address');
+
+            expect(addressElements).to.have.lengthOf(2);
+            expect(addressElements[0].address).to.deep.equal(address1);
+            expect(addressElements[1].address).to.deep.equal(address2);
+
+            done();
+          });
+        });
+
+        test('when an <banq-address> element is clicked the <banq-address-list> its selected property is set', function(done) {
+          banqAddressList.generateRequest();
+          server.respond();
+
+          flush(function() {
+            let addresses = banqAddressList.$$('banq-address').click();
+
+            expect(banqAddressList.selected).to.deep.equal(address1);
+
+            done();
+          });
+        });
+
+        test('when an <banq-address> element is clicked it is the ONLY <banq-address> elements of which the opened property is set', function(done) {
+          banqAddressList.generateRequest();
+          server.respond();
+
+          flush(function() {
+            let addressElements = Polymer.dom(banqAddressList.root).querySelectorAll('banq-address');
+
+            addressElements[0].opened = true;
+            addressElements[1].click();
+
+            expect(addressElements[0].opened).to.be.falue;
+            expect(addressElements[1].opened).to.be.true;
+
+            done();
+          });
+        });
+
+        test('an <banq-address-list> element has its simple property set to false by default', function() {
+          expect(banqAddressList.simple).to.be.false;
+        });
+
+        test('when an <banq-address-list> element has its simple property set then the <banq-address> elements should have it set as well', function(done) {
+          banqAddressList.simple = true;
+          banqAddressList.generateRequest();
+          server.respond();
+
+          flush(function() {
+            let address = banqAddressList.$$('banq-address');
+
+            expect(address.simple).to.be.true;
+
+            done();
+          });
+        });
+
+        test('when an <banq-address-list> element has its simple property NOT set then the <banq-address> elements should have it NOT set as well', function(done) {
+          banqAddressList.simple = false;
+          banqAddressList.generateRequest();
+          server.respond();
+
+          flush(function() {
+            let address = banqAddressList.$$('banq-address');
+
+            expect(address.simple).to.be.false;
+
+            done();
+          });
+        });
+
+      });
+    </script>
+  </body>
+</html>

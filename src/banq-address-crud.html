@@ -55,9 +55,9 @@
 
     <paper-input id="name" required label="Name" value="[[address.name]]"></paper-input>
     <paper-input id="number" required label="Account number" value="[[address.number]]"></paper-input>
-    <paper-button raised on-tap="_handleCancel"><iron-icon icon="arrow-back"></iron-icon>Cancel</paper-button>
-    <paper-button raised on-tap="_deleteAddress" hidden$="[[create]]"><iron-icon icon="delete"></iron-icon>Delete</paper-button>
-    <paper-button raised on-tap="_updateOrCreateAddress"><iron-icon icon="save"></iron-icon>Save</paper-button>
+    <paper-button id="buttonCancel" raised on-tap="_handleCancel"><iron-icon icon="arrow-back"></iron-icon>Cancel</paper-button>
+    <paper-button id="buttonDelete" raised on-tap="_deleteAddress" hidden$="[[create]]"><iron-icon icon="delete"></iron-icon>Delete</paper-button>
+    <paper-button id="buttonSave" raised on-tap="_updateOrCreateAddress"><iron-icon icon="save"></iron-icon>Save</paper-button>
 
   </template>
   <script>
@@ -91,7 +91,6 @@
          */
 
         properties: {
-          wide: Boolean,
           url: String,
           token: {
             type: String,
@@ -103,17 +102,20 @@
         },
 
         observers: [
+          '_handleCreateResponse(createResponse)',
+          '_handleUpdateResponse(updateResponse)',
+          '_handleDeleteResponse(deleteResponse)',
           '_handleError(error)'
         ],
 
         reset: function() {
-          this.$.name.value = undefined;
-          this.$.number.value = undefined;
+          this.$.name.value = '';
+          this.$.number.value = '';
         },
 
         _handleCancel: function() {
-          this.fire('canceled');
           this.reset();
+          this.fire('canceled');
         },
 
         _updateOrCreateAddress: function() {
@@ -129,8 +131,6 @@
             this.$.ajaxAddressCreate.body = address;
             this.$.ajaxAddressCreate.url = this.url;
             this.$.ajaxAddressCreate.generateRequest();
-
-            this.fire('created');
           } else {
             address.id = this.address.id;
             address.userId = this.address.userId;
@@ -142,8 +142,6 @@
             this.$.ajaxAddressUpdate.body = address;
             this.$.ajaxAddressUpdate.url = this.url + address.id;
             this.$.ajaxAddressUpdate.generateRequest();
-
-            this.fire('updated');
           }
 
           this.reset();
@@ -157,8 +155,19 @@
           this.$.ajaxAddressDelete.url = this.url + this.address.id;
           this.$.ajaxAddressDelete.generateRequest();
 
-          this.fire('deleted');
           this.reset();
+        },
+
+        _handleCreateResponse: function(address) {
+          this.fire('created', address);
+        },
+
+        _handleUpdateResponse: function(address) {
+          this.fire('updated', address);
+        },
+
+        _handleDeleteResponse: function(deleteResponse) {
+          this.fire('deleted');
         },
 
         _handleError: function(error) {

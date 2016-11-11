@@ -45,6 +45,10 @@
           expect(actualNumber).to.equal(address.number);
         });
 
+        test('the element its opened property is false by default', function() {
+          expect(banqAddress.opened).to.be.false;
+        });
+
         test('clicking the element sets the opened property from false to true', function() {
           banqAddress.opened = false;
           banqAddress.click();
@@ -57,6 +61,10 @@
           banqAddress.click();
 
           expect(banqAddress.opened).to.be.false;
+        });
+
+        test('the element its simple property is false by default', function() {
+          expect(banqAddress.simple).to.be.false;
         });
 
         test('when the simple property is present the element has no buttons', function(done) {

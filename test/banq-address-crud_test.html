@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+    <title>banq-address-crud test</title>
+
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../../web-component-tester/browser.js"></script>
+
+    <link rel="import" href="../src/banq-address-crud.html">
+  </head>
+  <body>
+    <test-fixture id="banqAddressCrud">
+      <template>
+        <banq-address-crud url="/responds_to_address_crud" token="1234"></banq-address-crud>
+      </template>
+    </test-fixture>
+
+    <script>
+      suite('<banq-address-crud>', function() {
+
+        let address;
+        let banqAddressCrud;
+        let server;
+        setup(function() {
+          address = {};
+          address.id = 2;
+          address.userId = 2;
+          address.name = 'Koen\'s Account';
+          address.number = 'NL22BANQ0102232698';
+
+          server = sinon.fakeServer.create();
+          server.respondWith(
+            'PUT',
+            /\/responds_to_address_crud.*/, [
+              200,
+              {'Content-Type': 'application/json'},
+              JSON.stringify(address)
+            ]
+          );
+          server.respondWith(
+            'POST',
+            /\/responds_to_address_crud.*/, [
+              200,
+              {'Content-Type': 'application/json'},
+              JSON.stringify(address)
+            ]
+          );
+          server.respondWith(
+            'DELETE',
+            /\/responds_to_address_crud.*/, [
+              200,
+              {'Content-Type': 'application/json'},
+              ''
+            ]
+          );
+
+          banqAddressCrud = fixture('banqAddressCrud');
+        });
+
+        teardown(function() {
+          server.restore();
+        });
+
+        test('instantiating the element works', function() {
+          expect(banqAddressCrud.is).to.equal('banq-address-crud');
+        });
+
+        test('by default the input elements their value is an empty string', function() {
+          let inputForName = banqAddressCrud.$$('#name');
+          let inputForNumber = banqAddressCrud.$$('#number');
+
+          expect(inputForName.value).to.equal('');
+          expect(inputForNumber.value).to.equal('');
+        });
+
+        test('calling reset clears the input elements', function() {
+          let inputForName = banqAddressCrud.$$('#name');
+          let inputForNumber = banqAddressCrud.$$('#number');
+
+          inputForName.value = "foo";
+          inputForNumber.value = "bar";
+
+          banqAddressCrud.reset();
+
+          expect(inputForName.value).to.equal('');
+          expect(inputForNumber.value).to.equal('');
+        });
+
+        test('when the create property is set the delete button is hidden', function() {
+          banqAddressCrud.create = true;
+
+          let buttonDelete = banqAddressCrud.$$('#buttonDelete');
+
+          expect(buttonDelete.hidden).to.be.true;
+        });
+
+        test('when the address property is set the input elements get the appropriate value', function() {
+          banqAddressCrud.address = address;
+
+          let inputForName = banqAddressCrud.$$('#name');
+          let inputForNumber = banqAddressCrud.$$('#number');
+
+          expect(inputForName.value).to.equal(address.name);
+          expect(inputForNumber.value).to.equal(address.number);
+        });
+
+        test('when the cancel button is clicked an canceled event is fired and the input elements are reset', function(done) {
+          banqAddressCrud.addEventListener('canceled', function(event) {
+            let inputForName = banqAddressCrud.$$('#name');
+            let inputForNumber = banqAddressCrud.$$('#number');
+
+            expect(inputForName.value).to.equal('');
+            expect(inputForNumber.value).to.equal('');
+
+            done();
+          })
+
+          banqAddressCrud.address = address;
+          banqAddressCrud.$$('#buttonCancel').click();
+        });
+
+        test('when in edit mode (the create property is NOT set) and the save button is clicked an updated event is fired having the updated address as detail', function(done) {
+          banqAddressCrud.addEventListener('updated', function(event) {
+            let inputForName = banqAddressCrud.$$('#name');
+            let inputForNumber = banqAddressCrud.$$('#number');
+
+            expect(inputForName.value).to.equal('');
+            expect(inputForNumber.value).to.equal('');
+            expect(event.detail).to.deep.equal(address);
+
+            done();
+          })
+
+          banqAddressCrud.address = address;
+          banqAddressCrud.$$('#buttonSave').click();
+          server.respond();
+        });
+
+        test('when in create mode (the create property is set) and the save button is clicked an created event is fired having the created address as detail', function(done) {
+          banqAddressCrud.addEventListener('created', function(event) {
+            let inputForName = banqAddressCrud.$$('#name');
+            let inputForNumber = banqAddressCrud.$$('#number');
+
+            expect(inputForName.value).to.equal('');
+            expect(inputForNumber.value).to.equal('');
+            expect(event.detail).to.deep.equal(address);
+
+            done();
+          })
+
+          banqAddressCrud.create = true;
+          banqAddressCrud.address = address;
+          banqAddressCrud.$$('#buttonSave').click();
+          server.respond();
+        });
+
+        test('when the delete button is clicked an deleted event is fired', function(done) {
+          banqAddressCrud.addEventListener('deleted', function(event) {
+            let inputForName = banqAddressCrud.$$('#name');
+            let inputForNumber = banqAddressCrud.$$('#number');
+
+            expect(inputForName.value).to.equal('');
+            expect(inputForNumber.value).to.equal('');
+
+            done();
+          })
+
+          banqAddressCrud.address = address;
+          banqAddressCrud.$$('#buttonDelete').click();
+          server.respond();
+        });
+
+      });
+    </script>
+  </body>
+</html>
