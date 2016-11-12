@@ -6,8 +6,9 @@
 
     <title>banq-address-crud test</title>
 
-    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
-    <script src="../../web-component-tester/browser.js"></script>
+    <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../bower_components/web-component-tester/browser.js"></script>
+    <script src="../bower_components/web-component-tester/data/a11ySuite.js"></script>
 
     <link rel="import" href="../src/banq-address-crud.html">
   </head>
@@ -173,6 +174,7 @@
           server.respond();
         });
 
+        a11ySuite('banqAddressCrud');
       });
     </script>
   </body>

@@ -6,3 +6,5 @@ COPY unbundled/ /usr/local/apache2/htdocs/
 COPY ./httpd-banq-client-web.conf /usr/local/apache2/conf/extra/
 
 RUN echo "Include conf/extra/httpd-banq-client-web.conf" >> /usr/local/apache2/conf/httpd.conf
+
+EXPOSE 80

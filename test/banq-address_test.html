@@ -6,8 +6,9 @@
 
     <title>banq-address test</title>
 
-    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
-    <script src="../../web-component-tester/browser.js"></script>
+    <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../bower_components/web-component-tester/browser.js"></script>
+    <script src="../bower_components/web-component-tester/data/a11ySuite.js"></script>
 
     <link rel="import" href="../src/banq-address.html">
   </head>
@@ -96,6 +97,7 @@
           });
         });
 
+        a11ySuite('banqAddress');
       });
     </script>
   </body>
