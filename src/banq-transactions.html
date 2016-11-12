@@ -33,8 +33,17 @@
         width: 100%;
       }
 
-      banq-transaction-list, banq-transfer {
+      banq-transaction-list:not([wide]), banq-transfer:not([wide]) {
         width: 100%;
+      }
+
+      banq-transaction-list[wide] {
+        @apply --layout-flex;
+        margin-right: 2%;
+      }
+
+      banq-transfer[wide] {
+        width: 30%;
       }
     </style>
 
@@ -51,16 +60,16 @@
                   number="[[account.id]]"
                   balance="[[account.balance]]">
     </banq-account>
-    <paper-button raised toggles active="{{!showTransfer}}">Transactions</paper-button>
-    <paper-button raised toggles active="{{showTransfer}}">Transfer</paper-button>
+    <paper-button hidden$="[[wide]]" raised toggles active="{{!showTransfer}}">Transactions</paper-button>
+    <paper-button hidden$="[[wide]]" raised toggles active="{{showTransfer}}">Transfer</paper-button>
     <banq-transaction-list id="transactionsList"
-                            hidden$="[[showTransfer]]"
+                            hidden$="[[_isTransactionListHidden(showTransfer, wide)]]"
                             wide$="[[wide]]"
                             base-url="[[baseUrl]]"
                             token="{{token}}"
                             account-number="[[accountNumber]]">
     </banq-transaction-list>
-    <banq-transfer  hidden$="[[!showTransfer]]"
+    <banq-transfer  hidden$="[[_isTransferHidden(showTransfer, wide)]]"
                     wide$="[[wide]]"
                     base-url="[[baseUrl]]"
                     token="{{token}}"
@@ -75,7 +84,11 @@
         is: 'banq-transactions',
 
         properties: {
-          wide: Boolean,
+          wide: {
+            type: Boolean,
+            reflectToAttribute: true,
+            value: false
+          },
           baseUrl: String,
           token: {
             type: String,
@@ -120,6 +133,14 @@
           this.generateRequest();
           this.$.transactionsList.generateRequest();
           this.showTransfer = false;
+        },
+
+        _isTransactionListHidden: function(isShowTransfer, isWide) {
+          return isShowTransfer && !isWide;
+        },
+
+        _isTransferHidden: function(isShowTransfer, isWide) {
+          return !(isShowTransfer || isWide);
         }
       });
     })();

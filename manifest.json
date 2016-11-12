@@ -1,7 +1,17 @@
 {
+  "dir": "ltr",
+  "lang": "en",
   "name": "banq-client-web",
-  "short_name": "banq-client-web",
+  "short_name": "BanQ",
   "description": "Banking web application for BanQ",
+  "theme_color": "#b21218",
   "start_url": "/",
-  "display": "standalone"
+  "display": "standalone",
+  "icons": [
+    {
+      "src": "images/banq_256x256.png",
+      "sizes": "256x256",
+      "type": "image/png"
+    }
+  ]
 }

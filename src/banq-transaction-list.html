@@ -29,6 +29,7 @@
     <paper-listbox attr-for-selected="number" selected="{{transactionData.transaction}}">
       <template is="dom-repeat" items="[[transactions]]" as="transaction">
         <banq-transaction wide$="[[wide]]"
+                          base-url="[[baseUrl]]"
                           token="{{token}}"
                           account-number="[[accountNumber]]"
                           transaction="[[transaction]]">
@@ -43,7 +44,11 @@
         is: 'banq-transaction-list',
 
         properties: {
-          wide: Boolean,
+          wide: {
+            type: Boolean,
+            reflectToAttribute: true,
+            value: false
+          },
           baseUrl: String,
           token: {
             type: String,

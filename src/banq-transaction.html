@@ -65,7 +65,12 @@
         ],
 
         properties: {
-          wide: Boolean,
+          wide: {
+            type: Boolean,
+            reflectToAttribute: true,
+            value: false
+          },
+          baseUrl: String,
           token: String,
           accountNumber: String,
           transaction: Object
@@ -76,25 +81,25 @@
         },
 
         observers: [
-          '_triggerRequest(token, accountNumber, transaction)',
+          '_triggerRequest(baseUrl, token, accountNumber, transaction)',
           '_handleError(error)'
         ],
 
         generateRequest: function() {
-          let account = this._isDebit(this.accountNumber, this.transaction) ? this.transaction.toAccount : this.transaction.fromAccount;
+          if (this.baseUrl && this.token && this.accountNumber && this.transaction) {
+            let account = this._isDebit(this.accountNumber, this.transaction) ? this.transaction.toAccount : this.transaction.fromAccount;
 
-          var headers = {};
-          headers.Authorization = 'Bearer ' + this.token;
+            var headers = {};
+            headers.Authorization = 'Bearer ' + this.token;
 
-          this.$.ajaxAccount.headers = headers;
-          this.$.ajaxAccount.url = 'http://localhost:3000/accounts/' + account;
-          this.$.ajaxAccount.generateRequest();
+            this.$.ajaxAccount.headers = headers;
+            this.$.ajaxAccount.url = this.baseUrl + 'accounts/' + account;
+            this.$.ajaxAccount.generateRequest();
+          }
         },
 
-        _triggerRequest: function(token, accountNumber, transaction) {
-          if (token && accountNumber && transaction) {
-            this.generateRequest();
-          }
+        _triggerRequest: function(baseUrl, token, accountNumber, transaction) {
+          this.generateRequest();
         },
 
         _handleError: function(error) {

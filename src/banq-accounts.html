@@ -87,7 +87,11 @@
         is: 'banq-accounts',
 
         properties: {
-          wide: Boolean,
+          wide: {
+            type: Boolean,
+            reflectToAttribute: true,
+            value: false
+          },
           route: {
             type: Object,
             notify: true
