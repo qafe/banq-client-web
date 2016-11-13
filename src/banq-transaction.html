@@ -87,7 +87,7 @@
 
         generateRequest: function() {
           if (this.baseUrl && this.token && this.accountNumber && this.transaction) {
-            let account = this._isDebit(this.accountNumber, this.transaction) ? this.transaction.toAccount : this.transaction.fromAccount;
+            var account = this._isDebit(this.accountNumber, this.transaction) ? this.transaction.toAccount : this.transaction.fromAccount;
 
             var headers = {};
             headers.Authorization = 'Bearer ' + this.token;

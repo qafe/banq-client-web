@@ -22,7 +22,7 @@
     <script>
       suite('<banq-account>', function() {
 
-        let banqAccount;
+        var banqAccount;
         setup(function() {
           banqAccount = fixture('banqAccount');
         });
@@ -32,37 +32,37 @@
         });
 
         test('setting the name property works', function() {
-          let name = 'D J Trump';
+          var name = 'D J Trump';
 
           banqAccount.name = name;
-          let actual = banqAccount.$$('#nameAndNumber > div').textContent;
+          var actual = banqAccount.$$('#nameAndNumber > div').textContent;
 
           expect(actual).to.equal(name);
         });
 
         test('setting the number property works', function() {
-          let number = 'NL22BANQ0102232698';
+          var number = 'NL22BANQ0102232698';
 
           banqAccount.number = number;
-          let actual = banqAccount.$$('#number').textContent;
+          var actual = banqAccount.$$('#number').textContent;
 
           expect(actual).to.equal(number);
         });
 
         test('setting the balance property works when given an integer', function() {
-          let balance = '5';
+          var balance = '5';
 
           banqAccount.balance = balance;
-          let actual = banqAccount.$$('#balance').textContent;
+          var actual = banqAccount.$$('#balance').textContent;
 
           expect(actual).to.equal('5,00');
         });
 
         test('setting the balance property works when given a number with more then two fraction digits', function() {
-          let balance = '5.4321'
+          var balance = '5.4321'
 
           banqAccount.balance = balance;
-          let actual = banqAccount.$$('#balance').textContent;
+          var actual = banqAccount.$$('#balance').textContent;
 
           expect(actual).to.equal('5,43');
         });

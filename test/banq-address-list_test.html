@@ -22,10 +22,10 @@
     <script>
       suite('<banq-address-list>', function() {
 
-        let address1;
-        let address2;
-        let banqAddressList;
-        let server;
+        var address1;
+        var address2;
+        var banqAddressList;
+        var server;
         setup(function() {
           address1 = {};
           address1.id = 2;
@@ -65,7 +65,7 @@
           server.respond();
 
           flush(function() {
-            let addressElements = Polymer.dom(banqAddressList.root).querySelectorAll('banq-address');
+            var addressElements = Polymer.dom(banqAddressList.root).querySelectorAll('banq-address');
 
             expect(addressElements).to.have.lengthOf(2);
             expect(addressElements[0].address).to.deep.equal(address1);
@@ -80,7 +80,7 @@
           server.respond();
 
           flush(function() {
-            let addresses = banqAddressList.$$('banq-address').click();
+            var addresses = banqAddressList.$$('banq-address').click();
 
             expect(banqAddressList.selected).to.deep.equal(address1);
 
@@ -93,7 +93,7 @@
           server.respond();
 
           flush(function() {
-            let addressElements = Polymer.dom(banqAddressList.root).querySelectorAll('banq-address');
+            var addressElements = Polymer.dom(banqAddressList.root).querySelectorAll('banq-address');
 
             addressElements[0].opened = true;
             addressElements[1].click();
@@ -115,7 +115,7 @@
           server.respond();
 
           flush(function() {
-            let address = banqAddressList.$$('banq-address');
+            var address = banqAddressList.$$('banq-address');
 
             expect(address.simple).to.be.true;
 
@@ -129,7 +129,7 @@
           server.respond();
 
           flush(function() {
-            let address = banqAddressList.$$('banq-address');
+            var address = banqAddressList.$$('banq-address');
 
             expect(address.simple).to.be.false;
 

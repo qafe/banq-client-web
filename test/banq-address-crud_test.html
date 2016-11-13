@@ -22,9 +22,9 @@
     <script>
       suite('<banq-address-crud>', function() {
 
-        let address;
-        let banqAddressCrud;
-        let server;
+        var address;
+        var banqAddressCrud;
+        var server;
         setup(function() {
           address = {};
           address.id = 2;
@@ -70,16 +70,16 @@
         });
 
         test('by default the input elements their value is an empty string', function() {
-          let inputForName = banqAddressCrud.$$('#name');
-          let inputForNumber = banqAddressCrud.$$('#number');
+          var inputForName = banqAddressCrud.$$('#name');
+          var inputForNumber = banqAddressCrud.$$('#number');
 
           expect(inputForName.value).to.equal('');
           expect(inputForNumber.value).to.equal('');
         });
 
         test('calling reset clears the input elements', function() {
-          let inputForName = banqAddressCrud.$$('#name');
-          let inputForNumber = banqAddressCrud.$$('#number');
+          var inputForName = banqAddressCrud.$$('#name');
+          var inputForNumber = banqAddressCrud.$$('#number');
 
           inputForName.value = "foo";
           inputForNumber.value = "bar";
@@ -93,7 +93,7 @@
         test('when the create property is set the delete button is hidden', function() {
           banqAddressCrud.create = true;
 
-          let buttonDelete = banqAddressCrud.$$('#buttonDelete');
+          var buttonDelete = banqAddressCrud.$$('#buttonDelete');
 
           expect(buttonDelete.hidden).to.be.true;
         });
@@ -101,8 +101,8 @@
         test('when the address property is set the input elements get the appropriate value', function() {
           banqAddressCrud.address = address;
 
-          let inputForName = banqAddressCrud.$$('#name');
-          let inputForNumber = banqAddressCrud.$$('#number');
+          var inputForName = banqAddressCrud.$$('#name');
+          var inputForNumber = banqAddressCrud.$$('#number');
 
           expect(inputForName.value).to.equal(address.name);
           expect(inputForNumber.value).to.equal(address.number);
@@ -110,8 +110,8 @@
 
         test('when the cancel button is clicked an canceled event is fired and the input elements are reset', function(done) {
           banqAddressCrud.addEventListener('canceled', function(event) {
-            let inputForName = banqAddressCrud.$$('#name');
-            let inputForNumber = banqAddressCrud.$$('#number');
+            var inputForName = banqAddressCrud.$$('#name');
+            var inputForNumber = banqAddressCrud.$$('#number');
 
             expect(inputForName.value).to.equal('');
             expect(inputForNumber.value).to.equal('');
@@ -125,8 +125,8 @@
 
         test('when in edit mode (the create property is NOT set) and the save button is clicked an updated event is fired having the updated address as detail', function(done) {
           banqAddressCrud.addEventListener('updated', function(event) {
-            let inputForName = banqAddressCrud.$$('#name');
-            let inputForNumber = banqAddressCrud.$$('#number');
+            var inputForName = banqAddressCrud.$$('#name');
+            var inputForNumber = banqAddressCrud.$$('#number');
 
             expect(inputForName.value).to.equal('');
             expect(inputForNumber.value).to.equal('');
@@ -142,8 +142,8 @@
 
         test('when in create mode (the create property is set) and the save button is clicked an created event is fired having the created address as detail', function(done) {
           banqAddressCrud.addEventListener('created', function(event) {
-            let inputForName = banqAddressCrud.$$('#name');
-            let inputForNumber = banqAddressCrud.$$('#number');
+            var inputForName = banqAddressCrud.$$('#name');
+            var inputForNumber = banqAddressCrud.$$('#number');
 
             expect(inputForName.value).to.equal('');
             expect(inputForNumber.value).to.equal('');
@@ -160,8 +160,8 @@
 
         test('when the delete button is clicked an deleted event is fired', function(done) {
           banqAddressCrud.addEventListener('deleted', function(event) {
-            let inputForName = banqAddressCrud.$$('#name');
-            let inputForNumber = banqAddressCrud.$$('#number');
+            var inputForName = banqAddressCrud.$$('#name');
+            var inputForNumber = banqAddressCrud.$$('#number');
 
             expect(inputForName.value).to.equal('');
             expect(inputForNumber.value).to.equal('');

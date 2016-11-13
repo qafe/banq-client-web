@@ -22,5 +22,10 @@
   </head>
   <body>
     <banq-client-web-app></banq-client-web-app>
+    <script>
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/service-worker.js');
+      }
+    </script>
   </body>
 </html>

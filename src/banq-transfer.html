@@ -106,15 +106,15 @@
         ],
 
         reset: function() {
-          this.$.amount.value = undefined;
-          this.$.recipient.value = undefined;
-          this.$.toAccount.value = undefined;
-          this.$.message.value = undefined;
+          this.$.amount.value = '';
+          this.$.recipient.value = '';
+          this.$.toAccount.value = '';
+          this.$.message.value = '';
         },
 
         _createTransaction: function() {
           if (this.token && this.baseUrl) {
-            let transaction = {};
+            var transaction = {};
             transaction.amount = Number.parseFloat(this.$.amount.value);
             transaction.fromAccount = this.accountNumber;
             transaction.toAccount = this.$.toAccount.value;

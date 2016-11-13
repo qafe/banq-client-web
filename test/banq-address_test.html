@@ -22,8 +22,8 @@
     <script>
       suite('<banq-address>', function() {
 
-        let banqAddress;
-        let address = {};
+        var banqAddress;
+        var address = {};
         setup(function() {
           address.id = 42;
           address.userId = 21;
@@ -39,8 +39,8 @@
         });
 
         test('setting the address property works', function() {
-          let actualName = banqAddress.$$('#name').textContent;
-          let actualNumber = banqAddress.$$('#number').textContent;
+          var actualName = banqAddress.$$('#name').textContent;
+          var actualNumber = banqAddress.$$('#number').textContent;
 
           expect(actualName).to.equal(address.name);
           expect(actualNumber).to.equal(address.number);
@@ -71,7 +71,7 @@
         test('when the simple property is present the element has no buttons', function(done) {
           banqAddress.simple = true;
           flush(function() {
-            let actual = banqAddress.$$('#buttons');
+            var actual = banqAddress.$$('#buttons');
             expect(actual).to.be.null;
             done();
           });
@@ -80,7 +80,7 @@
         test('when the simple property is NOT present the element has buttons', function(done) {
           banqAddress.simple = false;
           flush(function() {
-            let actual = banqAddress.$$('#buttons');
+            var actual = banqAddress.$$('#buttons');
             expect(actual).to.be.not.null;
             done();
           });

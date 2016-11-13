@@ -5,6 +5,7 @@
   "short_name": "BanQ",
   "description": "Banking web application for BanQ",
   "theme_color": "#b21218",
+  "background_color": "#fafafa",
   "start_url": "/",
   "display": "standalone",
   "icons": [

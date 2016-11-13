@@ -90,14 +90,14 @@
         },
 
         _copyNameAndNumber: function() {
-          let name = this.$.name;
-          let number = this.$.number;
+          var name = this.$.name;
+          var number = this.$.number;
 
-          let range = document.createRange();
+          var range = document.createRange();
           range.selectNode(number);
           range.insertNode(name);
 
-          let selection = window.getSelection();
+          var selection = window.getSelection();
           if(selection.rangeCount > 0) {
             selection.removeAllRanges();
           }
