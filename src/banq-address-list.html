@@ -60,7 +60,7 @@
         },
 
         observers: [
-          '_triggerRequest(token)',
+          '_triggerRequest(baseUrl, token)',
           '_handleError(error)',
           '_computeSelected(selectedAddress)'
         ],
@@ -76,7 +76,7 @@
           }
         },
 
-        _triggerRequest: function(token) {
+        _triggerRequest: function(baseUrl, token) {
           this.generateRequest();
         },
 

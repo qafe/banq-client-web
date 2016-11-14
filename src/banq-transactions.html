@@ -2,8 +2,6 @@
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
-<link rel="import" href="banq-transaction-list.html">
-<link rel="import" href="banq-transfer.html">
 <link rel="import" href="banq-styles.html">
 
 <dom-module id="banq-transactions">
@@ -104,12 +102,13 @@
         },
 
         observers: [
-          '_triggerRequest(token, accountNumber)',
-          '_handleError(error)'
+          '_triggerRequest(baseUrl, token, accountNumber)',
+          '_handleError(error)',
+          '_handleImports(showTransfer, wide)'
         ],
 
         generateRequest: function() {
-          if (this.token && this.accountNumber && this.baseUrl) {
+          if (this.baseUrl && this.token && this.accountNumber) {
             var headers = {};
             headers.Authorization = 'Bearer ' + this.token;
 
@@ -119,7 +118,7 @@
           }
         },
 
-        _triggerRequest: function(token, accountNumber) {
+        _triggerRequest: function(baseUrl, token, accountNumber) {
           this.generateRequest();
         },
 
@@ -141,6 +140,18 @@
 
         _isTransferHidden: function(isShowTransfer, isWide) {
           return !(isShowTransfer || isWide);
+        },
+
+        _handleImports: function(isShowTransfer, isWide) {
+          if (!this._isTransferHidden(isShowTransfer, isWide)) {
+            var url = this.resolveUrl('banq-transfer.html');
+            this.importHref(url, null, null, true);
+          }
+
+          if (!this._isTransactionListHidden(isShowTransfer, isWide)) {
+            var url = this.resolveUrl('banq-transaction-list.html');
+            this.importHref(url, null, null, true);
+          }
         }
       });
     })();

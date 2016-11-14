@@ -17,9 +17,6 @@
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../bower_components/paper-menu/paper-menu.html">
-<link rel="import" href="banq-accounts.html">
-<link rel="import" href="banq-addresses.html">
-<link rel="import" href="banq-login-credentials.html">
 <link rel="import" href="banq-styles.html">
 
 <dom-module id="banq-client-web-app">
@@ -96,9 +93,8 @@
         </app-header>
         <div id="main">
           <iron-pages id="pages"
-                      selected="{{pageData.page}}"
-                      attr-for-selected="data-page"
-                      fallback-selection="login">
+                      selected="[[pageData.page]]"
+                      attr-for-selected="data-page">
             <banq-login-credentials data-page="login"
                                     wide$="[[wide]]"
                                     base-url="[[baseUrl]]"
@@ -147,22 +143,41 @@
       },
 
       observers: [
-        '_handleToken(token)',
-        '_verifyPageAccess(token, pageData.page)'
+        '_tokenOrPageChanged(token, pageData.page)',
+        '_pageChanged(pageData.page)'
       ],
-
-      _handleToken: function(token) {
-        this.$.pages.selected = (token == null ? '' : 'accounts');
-      },
 
       _handleSignOut: function(token) {
         this.token = null;
       },
 
-      _verifyPageAccess: function(token, page) {
+      _tokenOrPageChanged: function(token, page) {
         if (!token && page != 'login') {
           this.set('route.path', '/login');
         }
+
+        if (token && (page == 'login' || page == '')) {
+          this.set('route.path', '/accounts');
+        }
+      },
+
+      _pageChanged: function(page) {
+        var url;
+        switch (page) {
+          case 'login':
+            url = this.resolveUrl('banq-login-credentials.html');
+            break;
+          case 'accounts':
+            url = this.resolveUrl('banq-accounts.html');
+            break;
+          case 'addresses':
+            url = this.resolveUrl('banq-addresses.html');
+            break;
+          default:
+            console.error('Unknown page: ' + page);
+        }
+
+        this.importHref(url, null, null, true);
       },
 
       _closeDrawer: function() {

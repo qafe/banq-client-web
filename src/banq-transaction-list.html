@@ -59,12 +59,12 @@
         },
 
         observers: [
-          '_triggerRequest(token, accountNumber)',
+          '_triggerRequest(baseUrl, token, accountNumber)',
           '_handleError(error)'
         ],
 
         generateRequest: function() {
-          if (this.token && this.accountNumber) {
+          if (this.baseUrl && this.token && this.accountNumber) {
             var headers = {};
             headers.Authorization = 'Bearer ' + this.token;
 
@@ -74,7 +74,7 @@
           }
         },
 
-        _triggerRequest: function(token, accountNumber) {
+        _triggerRequest: function(baseUrl, token, accountNumber) {
           this.generateRequest();
         },
 

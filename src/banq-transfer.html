@@ -7,8 +7,6 @@
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
-<link rel="import" href="banq-overlay.html">
-<link rel="import" href="banq-address-list.html">
 <link rel="import" href="banq-styles.html">
 
 <dom-module id="banq-transfer">
@@ -60,7 +58,7 @@
     <paper-input id="message" required label="Message"></paper-input>
     <paper-button on-tap="_createTransaction">Submit</paper-button>
 
-    <banq-overlay id="addressListOverlay">
+    <banq-overlay id="addressListOverlay" hidden>
       <iron-scroll-threshold>
         <banq-address-list  id="addressList"
                             simple
@@ -140,11 +138,21 @@
         },
 
         _showAdressList: function() {
-          this.$.addressListOverlay.opened = true;
+          var urlBanqAddressList = this.resolveUrl('banq-address-list.html');
+          this.importHref(urlBanqAddressList, null, null, true);
+
+          var urlBanqOverlay = this.resolveUrl('banq-overlay.html');
+          this.importHref(urlBanqOverlay, this._overlayLoaded, this._overlayLoaded, true);
         },
 
         _hideAddressList: function() {
           this.$.addressListOverlay.opened = false;
+          this.$.addressListOverlay.hidden = true;
+        },
+
+        _overlayLoaded: function() {
+          this.$.addressListOverlay.opened = true;
+          this.$.addressListOverlay.hidden = false;
         }
       });
     })();

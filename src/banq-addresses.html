@@ -3,8 +3,6 @@
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../bower_components/paper-fab/paper-fab.html">
-<link rel="import" href="banq-address-list.html">
-<link rel="import" href="banq-address-crud.html">
 <link rel="import" href="banq-styles.html">
 
 <dom-module id="banq-addresses">
@@ -73,6 +71,20 @@
             notify: true,
             value: null
           }
+        },
+
+        observers: [
+          '_handleImports(selectedPage)'
+        ],
+
+        _handleImports: function(selectedPage) {
+          var url;
+          if (selectedPage == 'address-list') {
+            url = this.resolveUrl('banq-address-list.html');
+          } else {
+            url = this.resolveUrl('banq-address-crud.html');
+          }
+          this.importHref(url, null, null, true);
         },
 
         _showAddressCrudView: function(event) {

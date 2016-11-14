@@ -4,8 +4,6 @@
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
-<link rel="import" href="banq-account.html">
-<link rel="import" href="banq-transactions.html">
 <link rel="import" href="banq-styles.html">
 
 <dom-module id="banq-accounts">
@@ -57,7 +55,8 @@
     <div id="headerAccount">Accounts</div><div id="headerBalance">Euro(€)</div>
     <iron-pages id="pages"
                 selected="[[accountData.accountNumber]]"
-                attr-for-selected="data-page">
+                attr-for-selected="data-page"
+                fallback-selection="accounts">
       <div data-page="accounts">
         <paper-listbox attr-for-selected="number" selected-item="{{selectedAccount}}" selected="{{accountData.accountNumber}}">
           <template is="dom-repeat" items="[[accounts]]" as="account">
@@ -106,7 +105,7 @@
         },
 
         observers: [
-          '_handleToken(token)',
+          '_handleToken(baseUrl, token)',
           '_handleSelectedAccountNumber(accountData.accountNumber)',
           '_handleRoute(route)',
           '_handleError(error)'
@@ -123,7 +122,7 @@
           }
         },
 
-        _handleToken: function(token) {
+        _handleToken: function(baseUrl, token) {
           this.generateRequest();
         },
 
@@ -131,12 +130,19 @@
           if (this.route && this.route.prefix == this.prefixPattern) {
             this.set('route.path', accountNumber);
           }
+
+          var url;
+          if (accountNumber) {
+            url = this.resolveUrl('banq-transactions.html');
+          } else {
+            url = this.resolveUrl('banq-account.html');
+          }
+          this.importHref(url, null, null, true);
         },
 
         _handleRoute: function(route) {
           if (route.path == '') {
             this.set('accountData.accountNumber', undefined);
-            this.$.pages.selected = 'accounts';
           }
         },
 
