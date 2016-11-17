@@ -39,6 +39,13 @@
       })();
     </script>
 
+    <!--
+      Not all browser support the Internationalization API e.g. Safari ONLY from version 10+.
+      The Polyfill Service only returns the polyfill code and the corresponding locale data when it is really needed,
+      if not it returns an empty script tag. See: https://github.com/andyearnshaw/Intl.js/#intljs-and-ft-polyfill-service
+    -->
+    <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=Intl.~locale.en"></script>
+
     <link rel="import" href="/src/banq-client-web-app.html">
     <link rel="import" href="/src/banq-styles.html">
 
