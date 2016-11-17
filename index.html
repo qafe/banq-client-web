@@ -11,7 +11,33 @@
     <!-- See https://goo.gl/OOhYW5 -->
     <link rel="manifest" href="/manifest.json">
 
-    <script src="/bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <script>
+      window.Polymer = {
+        dom: 'shady',
+        lazyRegister: true
+      };
+
+      (function() {
+        'use strict';
+
+        var isWebComponentsSupported = (
+          'registerElement' in document
+          && 'import' in document.createElement('link')
+          && 'content' in document.createElement('template')
+        );
+
+        if (!isWebComponentsSupported) {
+          var script = document.createElement('script');
+          script.async = true;
+          script.src = '/bower_components/webcomponentsjs/webcomponents.min.js';
+          document.head.appendChild(script);
+        }
+
+        if ('serviceWorker' in navigator) {
+          navigator.serviceWorker.register('/service-worker.js');
+        }
+      })();
+    </script>
 
     <link rel="import" href="/src/banq-client-web-app.html">
     <link rel="import" href="/src/banq-styles.html">
@@ -22,10 +48,5 @@
   </head>
   <body>
     <banq-client-web-app></banq-client-web-app>
-    <script>
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/service-worker.js');
-      }
-    </script>
   </body>
 </html>

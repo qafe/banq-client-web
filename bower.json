@@ -28,6 +28,6 @@
   },
   "devDependencies": {
     "web-component-tester": "^5.0.0",
-    "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.22"
+    "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.23"
   }
 }
