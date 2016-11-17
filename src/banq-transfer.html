@@ -40,7 +40,7 @@
                 content-type="application/json"
                 handle-as="json"
                 last-error="{{error}}"
-                last-response="{{transactions}}">
+                last-response="{{transaction}}">
     </iron-ajax>
 
     <paper-input id="amount" required label="Amount" type="number">
@@ -100,6 +100,7 @@
 
         observers: [
           '_handleError(error)',
+          '_handleResponse(transaction)',
           '_hideAddressList(address)'
         ],
 
@@ -108,6 +109,7 @@
           this.$.recipient.value = '';
           this.$.toAccount.value = '';
           this.$.message.value = '';
+          this.$.addressList.reset();
         },
 
         _createTransaction: function() {
@@ -126,9 +128,12 @@
             this.$.ajaxTransactions.body = transaction;
             this.$.ajaxTransactions.generateRequest();
 
-            this.fire('created');
             this.reset();
           }
+        },
+
+        _handleResponse: function(transaction) {
+          this.fire('created');
         },
 
         _handleError: function(error) {
@@ -139,7 +144,7 @@
 
         _showAdressList: function() {
           var urlBanqAddressList = this.resolveUrl('banq-address-list.html');
-          this.importHref(urlBanqAddressList, null, null, true);
+          this.importHref(urlBanqAddressList, this._addressListLoaded, this._addressListLoaded, true);
 
           var urlBanqOverlay = this.resolveUrl('banq-overlay.html');
           this.importHref(urlBanqOverlay, this._overlayLoaded, this._overlayLoaded, true);
@@ -148,6 +153,10 @@
         _hideAddressList: function() {
           this.$.addressListOverlay.opened = false;
           this.$.addressListOverlay.hidden = true;
+        },
+
+        _addressListLoaded: function() {
+          this.$.addressList.generateRequest();
         },
 
         _overlayLoaded: function() {
