@@ -17,6 +17,7 @@
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../bower_components/paper-menu/paper-menu.html">
+<link rel="import" href="../bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="banq-styles.html">
 
 <dom-module id="banq-client-web-app">
@@ -58,6 +59,20 @@
       #q {
         color: var(--secondary-text-color);
       }
+
+      #toast {
+        @apply --layout-horizontal;
+        @apply --layout-justified;
+        @apply --layout-center;
+        padding: 0 1% 0 1%;
+        background-color: var(--primary-color);
+      }
+
+      #toastIconClose {
+        padding: 0;
+        height: 1.8em;
+        width: 1.8em;
+      }
     </style>
 
     <iron-media-query query="(min-width: 720px)" query-matches="{{wide}}"></iron-media-query>
@@ -72,7 +87,7 @@
                 tail="{{pageTail}}">
     </app-route>
 
-    <app-drawer-layout fullbleed force-narrow>
+    <app-drawer-layout id="drawerLayout" fullbleed force-narrow>
       <app-drawer id="drawer">
         <paper-menu selectable="paper-item"
                     selected="{{pageData.page}}"
@@ -117,6 +132,10 @@
           </iron-pages>
         </div>
       </app-header-layout>
+
+      <paper-toast id="toast" class="fit-bottom" fit-into="[[_toastTarget]]" duration="0">
+        <paper-icon-button id="toastIconClose" icon="icons:close" on-tap="_closeToast"></paper-icon-button>
+      </paper-toast>
     </app-drawer-layout>
   </template>
 
@@ -139,6 +158,12 @@
         token: {
           type: String,
           value: null
+        },
+        _toastTarget: {
+          type: Object,
+          value: function() {
+            return this.$.drawerLayout;
+          }
         }
       },
 
@@ -146,6 +171,10 @@
         '_tokenOrPageChanged(token, pageData.page)',
         '_pageChanged(pageData.page)'
       ],
+
+      listeners: {
+        'error': '_showErrorMessage'
+      },
 
       _handleSignOut: function(token) {
         this.token = null;
@@ -180,8 +209,17 @@
         this.importHref(url, null, null, true);
       },
 
+      _showErrorMessage: function(event) {
+        this.$.toast.text = event.detail;
+        this.$.toast.opened = true;
+      },
+
       _closeDrawer: function() {
         this.$.drawer.opened = false;
+      },
+
+      _closeToast: function() {
+        this.$.toast.opened = false;
       }
     });
   </script>
