@@ -84,7 +84,7 @@
         },
 
         _handleError: function(error) {
-          if (error) {
+          if (error && error.response) {
             if (error.status == '403') { this.token = null; }
             this.fire('error', error.response.message);
           }
