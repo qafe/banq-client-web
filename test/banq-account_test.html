@@ -44,7 +44,7 @@
           var number = 'NL22BANQ0102232698';
 
           banqAccount.number = number;
-          var actual = banqAccount.$$('#number').textContent;
+          var actual = banqAccount.$.number.textContent;
 
           expect(actual).to.equal(number);
         });

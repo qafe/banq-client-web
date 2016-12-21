@@ -39,8 +39,8 @@
         });
 
         test('setting the address property works', function() {
-          var actualName = banqAddress.$$('#name').textContent;
-          var actualNumber = banqAddress.$$('#number').textContent;
+          var actualName = banqAddress.$.name.textContent;
+          var actualNumber = banqAddress.$.number.textContent;
 
           expect(actualName).to.equal(address.name);
           expect(actualNumber).to.equal(address.number);
@@ -50,18 +50,26 @@
           expect(banqAddress.opened).to.be.false;
         });
 
-        test('clicking the element sets the opened property from false to true', function() {
+        test('clicking the element sets the opened property from false to true', function(done) {
           banqAddress.opened = false;
           banqAddress.click();
 
-          expect(banqAddress.opened).to.be.true;
+          flush(function() {
+            expect(banqAddress.opened).to.be.true;
+            expect(banqAddress.$$('#buttons').opened).to.be.true;
+            done();
+          });
         });
 
-        test('clicking the element sets the opened property from true to false', function() {
+        test('clicking the element sets the opened property from true to false', function(done) {
           banqAddress.opened = true;
           banqAddress.click();
 
-          expect(banqAddress.opened).to.be.false;
+          flush(function() {
+            expect(banqAddress.opened).to.be.false;
+            expect(banqAddress.$$('#buttons').opened).to.be.false;
+            done();
+          });
         });
 
         test('the element its simple property is false by default', function() {
@@ -87,12 +95,12 @@
         });
 
         test('when the edit button is clicked an edit event is dispatched havind the address as detail', function(done) {
-          flush(function() {
-            banqAddress.addEventListener('edit', function(event) {
-              expect(event.detail).to.deep.equal(address);
-              done();
-            })
+          banqAddress.addEventListener('edit', function(event) {
+            expect(event.detail).to.deep.equal(address);
+            done();
+          })
 
+          flush(function() {
             banqAddress.$$('#buttonEdit').click();
           });
         });
